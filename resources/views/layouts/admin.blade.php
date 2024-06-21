@@ -97,6 +97,10 @@
     <i class="fas fa-tags"></i> 
     <span class="menu-text">Category Management</span>
 </a>
+<a href="{{ route('admin.suppliers.index') }}">
+    <i class="fas fa-box"></i> 
+    <span class="menu-text">Supplier Management</span>
+</a>
 <a href="{{ route('admin.products.index') }}">
     <i class="fas fa-box-open"></i> 
     <span class="menu-text">Product Management</span>

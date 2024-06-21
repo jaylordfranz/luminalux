@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\SupplierController;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,6 +54,11 @@ Route::get('/admin/products/{product}', [ProductController::class, 'show'])->nam
 Route::get('/admin/products/{product}/edit', [ProductController::class, 'edit'])->name('admin.products.edit');
 Route::put('/admin/products/{product}', [ProductController::class, 'update'])->name('admin.products.update');
 Route::delete('/admin/products/{product}', [ProductController::class, 'destroy'])->name('admin.products.destroy');
+
+Route::resource('suppliers', SupplierController::class);
+
+Route::get('/admin/suppliers/create', [SupplierController::class, 'create'])->name('suppliers.create');
+Route::get('/admin/suppliers', [SupplierController::class, 'index'])->name('admin.suppliers.index');
 
 Route::get('/customer/dashboard', function () {
     return view('customer.dashboard');
