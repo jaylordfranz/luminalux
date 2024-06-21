@@ -1,0 +1,20 @@
+/* Example styles for the header */
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    color: #333333;
+}
+
+.navbar-brand img {
+    margin-right: 10px;
+}
+
+.navbar-nav .nav-link {
+    margin-left: 10px;
+}
+
+.dropdown-menu {
+    min-width: 150px;
+}

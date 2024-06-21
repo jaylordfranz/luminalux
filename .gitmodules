@@ -1,0 +1,3 @@
+[submodule "Lumina-Lux"]
+	path = Lumina-Lux
+	url = https://github.com/franzbaribar/luminalux.git
