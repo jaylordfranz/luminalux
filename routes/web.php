@@ -5,6 +5,7 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\DiscountController;
 
 /*
 |--------------------------------------------------------------------------
@@ -56,6 +57,8 @@ Route::put('/admin/products/{product}', [ProductController::class, 'update'])->n
 Route::delete('/admin/products/{product}', [ProductController::class, 'destroy'])->name('admin.products.destroy');
 
 Route::resource('suppliers', SupplierController::class);
+
+Route::resource('discounts', DiscountController::class);
 
 Route::get('/admin/suppliers/create', [SupplierController::class, 'create'])->name('suppliers.create');
 Route::get('/admin/suppliers', [SupplierController::class, 'index'])->name('admin.suppliers.index');

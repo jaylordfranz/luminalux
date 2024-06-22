@@ -109,6 +109,10 @@
     <i class="fas fa-money-bill-wave"></i> 
     <span class="menu-text">Payment Verification</span>
 </a>
+<a href="{{ route('discounts.index') }}">
+            <i class="fas fa-percentage"></i> 
+            <span class="menu-text">Discount Management</span>
+        </a>
 <a href="{{ route('admin.orders') }}">
     <i class="fas fa-shopping-cart"></i> 
     <span class="menu-text">Order Management</span>
