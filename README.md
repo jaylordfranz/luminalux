@@ -40,5 +40,48 @@ Add the necessary links and scripts in the layouts.admin view:
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
 
+Add the script in the end of the index view:
+    <script>
+    $(document).ready(function() {
+        var table = $('#suppliersTable').DataTable({
+            "paging": true,
+            "ordering": true,
+            "info": true,
+            "searching": true,
+            "order": [],
+            "language": {
+                "search": "",
+                "searchPlaceholder": "Search by ID..."
+            },
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    title: 'Suppliers'
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'Suppliers'
+                }
+            ]
+        });
+
+        $('#searchButton').on('click', function() {
+            var value = $('#searchInput').val().trim();
+            if (value) {
+                table.columns().every(function(index) {
+                    if (index === 0) { // Search in the first column (ID)
+                        this.search('^' + value + '$', true, false).draw();
+                    }
+                });
+            } else {
+                table.columns().every(function() {
+                    this.search('').draw();
+                });
+            }
+        });
+    });
+</script>
+
 Datatables, Export, and Search should now work properly in the CRUD
 
