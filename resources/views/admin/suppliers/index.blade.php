@@ -12,16 +12,6 @@
         <a href="{{ route('suppliers.create') }}" class="btn btn-primary mr-2">Add Supplier</a>
     </div>
 
-    <!-- Search Bar with Magnifying Glass -->
-    <div class="input-group mb-3">
-        <input type="text" id="searchInput" class="form-control" placeholder="Search by ID...">
-        <div class="input-group-append">
-            <button id="searchButton" class="btn btn-outline-secondary" type="button">
-                <i class="fas fa-search"></i>
-            </button>
-        </div>
-    </div>
-
     <!-- DataTable with Search Bar and Pagination -->
     <table id="suppliersTable" class="table table-striped table-bordered" style="width:100%">
         <thead>
@@ -68,6 +58,22 @@
 
 @include('partials.footer')
 
+<!-- DataTables CSS and JS -->
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.bootstrap4.min.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
+
+<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.bootstrap4.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+
 <script>
     $(document).ready(function() {
         var table = $('#suppliersTable').DataTable({
@@ -78,8 +84,19 @@
             "order": [],
             "language": {
                 "search": "",
-                "searchPlaceholder": "Search by ID..."
-            }
+                "searchPlaceholder": "Search..."
+            },
+            dom: 'Bfrtip',
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    title: 'Suppliers'
+                },
+                {
+                    extend: 'pdfHtml5',
+                    title: 'Suppliers'
+                }
+            ]
         });
 
         $('#searchButton').on('click', function() {

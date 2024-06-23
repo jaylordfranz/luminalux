@@ -10,7 +10,7 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $products = Product::with('category')->paginate(10); // Eager load category relationship
+        $products = Product::with('category')->paginate(20); // Eager load category relationship
         return view('admin.products.index', compact('products'));
     }
 

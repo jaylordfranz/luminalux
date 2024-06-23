@@ -18,7 +18,7 @@ class SupplierController extends Controller
 
     public function index()
     {
-        $suppliers = Supplier::paginate(10); // Paginate with 10 items per page, adjust as needed
+        $suppliers = Supplier::paginate(20); // Paginate with 10 items per page, adjust as needed
         return view('admin.suppliers.index', compact('suppliers'));
     }
 

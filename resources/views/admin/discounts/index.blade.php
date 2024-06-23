@@ -12,14 +12,6 @@
             <a href="{{ route('discounts.create') }}" class="btn btn-primary mr-2">Add Discount</a>
         </div>
 
-        <!-- Search Bar with Magnifying Glass -->
-        <div class="input-group mb-3">
-            <div class="input-group-prepend">
-                <span class="input-group-text"><i class="fas fa-search"></i></span>
-            </div>
-            <input type="text" id="searchInput" class="form-control" placeholder="Search...">
-        </div>
-
         <!-- DataTable with Search Bar and Pagination -->
         <table id="discountsTable" class="table table-striped table-bordered" style="width:100%">
             <thead>
@@ -64,22 +56,47 @@
 
     @include('partials.footer')
 
+    <!-- DataTables CSS and JS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+
     <script>
-        // DataTable initialization with search functionality
         $(document).ready(function() {
             var table = $('#discountsTable').DataTable({
-                "paging": true, // Enable pagination
-                "ordering": true, // Enable sorting
-                "info": true, // Enable table information
-                "searching": true, // Enable search bar
-                "order": [], // No initial ordering
+                "paging": true,
+                "ordering": true,
+                "info": true,
+                "searching": true,
+                "order": [],
                 "language": {
-                    "search": "", // Clear default search text
-                    "searchPlaceholder": "Search..." // Placeholder for search input
-                }
+                    "search": "",
+                    "searchPlaceholder": "Search..."
+                },
+                dom: 'Bfrtip',
+                buttons: [
+                    {
+                        extend: 'excelHtml5',
+                        title: 'Discounts'
+                    },
+                    {
+                        extend: 'pdfHtml5',
+                        title: 'Discounts'
+                    }
+                ]
             });
 
-            // Apply search functionality to search input
             $('#searchInput').on('keyup', function() {
                 table.search($(this).val()).draw();
             });
