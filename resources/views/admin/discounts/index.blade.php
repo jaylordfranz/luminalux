@@ -7,9 +7,11 @@
         <h2>Manage Discounts</h2>
         <p>Here you can view, edit, and delete discounts.</p>
 
-        <!-- Buttons -->
+        <!-- Add Discount Button -->
         <div class="mb-3">
-            <a href="{{ route('discounts.create') }}" class="btn btn-primary mr-2">Add Discount</a>
+            <button type="button" class="btn btn-primary mr-2" data-toggle="modal" data-target="#addDiscountModal">
+                Add Discount
+            </button>
         </div>
 
         <!-- DataTable with Search Bar and Pagination -->
@@ -55,6 +57,49 @@
     </div>
 
     @include('partials.footer')
+
+    <!-- Add Discount Modal -->
+    <div class="modal fade" id="addDiscountModal" tabindex="-1" role="dialog" aria-labelledby="addDiscountModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addDiscountModalLabel">Add Discount</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form action="{{ route('discounts.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="code">Code</label>
+                            <input type="text" class="form-control" id="code" name="code" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <textarea class="form-control" id="description" name="description"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="discount_percentage">Discount Percentage</label>
+                            <input type="number" class="form-control" id="discount_percentage" name="discount_percentage" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="valid_from">Valid From</label>
+                            <input type="date" class="form-control" id="valid_from" name="valid_from" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="valid_to">Valid To</label>
+                            <input type="date" class="form-control" id="valid_to" name="valid_to" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <!-- DataTables CSS and JS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">

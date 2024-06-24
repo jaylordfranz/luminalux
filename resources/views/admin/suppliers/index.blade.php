@@ -7,9 +7,11 @@
     <h2>Manage Suppliers</h2>
     <p>Here you can add new suppliers, update supplier details, and delete suppliers.</p>
 
-    <!-- Buttons -->
+    <!-- Add Supplier Button -->
     <div class="mb-3">
-        <a href="{{ route('suppliers.create') }}" class="btn btn-primary mr-2">Add Supplier</a>
+        <button type="button" class="btn btn-primary mr-2" data-toggle="modal" data-target="#addSupplierModal">
+            Add Supplier
+        </button>
     </div>
 
     <!-- DataTable with Search Bar and Pagination -->
@@ -39,7 +41,8 @@
                 <td>
                     <a href="{{ route('suppliers.show', $supplier->id) }}" class="btn btn-info btn-sm">View</a>
                     <a href="{{ route('suppliers.edit', $supplier->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                    <form action="{{ route('suppliers.destroy', $supplier->id) }}" method="POST" style="display:inline-block;">
+                    <form action="{{ route('suppliers.destroy', $supplier->id) }}" method="POST"
+                        style="display:inline-block;">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
@@ -57,6 +60,46 @@
 </div>
 
 @include('partials.footer')
+
+<!-- Add Supplier Modal -->
+<div class="modal fade" id="addSupplierModal" tabindex="-1" role="dialog" aria-labelledby="addSupplierModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addSupplierModalLabel">Add Supplier</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('suppliers.store') }}" method="POST">
+                @csrf
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="supplierName">Name</label>
+                        <input type="text" class="form-control" id="supplierName" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="supplierContact">Contact Info</label>
+                        <input type="text" class="form-control" id="supplierContact" name="contact_info" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="supplierAddress">Address</label>
+                        <textarea class="form-control" id="supplierAddress" name="address"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="supplierImages">Images</label>
+                        <input type="file" class="form-control-file" id="supplierImages" name="images[]" multiple>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
 
 <!-- DataTables CSS and JS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">

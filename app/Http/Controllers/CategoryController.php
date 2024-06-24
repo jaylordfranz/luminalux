@@ -58,4 +58,11 @@ class CategoryController extends Controller
 
         return redirect()->route('categories.index')->with('success', 'Category deleted successfully.');
     }
+
+    public function productCounts()
+    {
+        $categories = Category::withCount('products')->get(['id', 'name', 'description', 'products_count']);
+
+        return response()->json($categories);
+    }
 }

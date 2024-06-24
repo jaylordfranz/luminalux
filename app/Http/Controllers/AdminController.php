@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -94,5 +95,18 @@ class AdminController extends Controller
     public function deleteReview($id)
     {
         // Logic to delete review
+    }
+
+    public function categoryProductChart()
+    {
+        $categories = Category::withCount('products')->get();
+        
+        $labels = $categories->pluck('name');
+        $data = $categories->pluck('products_count');
+
+        return response()->json([
+            'labels' => $labels,
+            'data' => $data,
+        ]);
     }
 }

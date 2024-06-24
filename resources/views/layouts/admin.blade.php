@@ -78,6 +78,7 @@
             display: none;
         }
     </style>
+    @yield('styles') <!-- Additional styles section for blade file-specific styles -->
 </head>
 <body>
 
@@ -86,51 +87,78 @@
             <i class="fas fa-angle-double-left"></i>
         </button>
         <a href="{{ route('admin.dashboard') }}">
-    <i class="fas fa-tachometer-alt"></i> 
-    <span class="menu-text">Dashboard</span>
-</a>
-<a href="{{ route('admin.users') }}">
-    <i class="fas fa-users"></i> 
-    <span class="menu-text">User Management</span>
-</a>
-<a href="{{ route('categories.index') }}">
-    <i class="fas fa-tags"></i> 
-    <span class="menu-text">Category Management</span>
-</a>
-<a href="{{ route('admin.suppliers.index') }}">
-    <i class="fas fa-box"></i> 
-    <span class="menu-text">Supplier Management</span>
-</a>
-<a href="{{ route('admin.products.index') }}">
-    <i class="fas fa-box-open"></i> 
-    <span class="menu-text">Product Management</span>
-</a>
-<a href="{{ route('admin.payments') }}">
-    <i class="fas fa-money-bill-wave"></i> 
-    <span class="menu-text">Payment Verification</span>
-</a>
-<a href="{{ route('discounts.index') }}">
+            <i class="fas fa-tachometer-alt"></i> 
+            <span class="menu-text">Dashboard</span>
+        </a>
+        <a href="{{ route('admin.users') }}">
+            <i class="fas fa-users"></i> 
+            <span class="menu-text">User Management</span>
+        </a>
+        <a href="{{ route('categories.index') }}">
+            <i class="fas fa-tags"></i> 
+            <span class="menu-text">Category Management</span>
+        </a>
+        <a href="{{ route('admin.suppliers.index') }}">
+            <i class="fas fa-box"></i> 
+            <span class="menu-text">Supplier Management</span>
+        </a>
+        <a href="{{ route('admin.products.index') }}">
+            <i class="fas fa-box-open"></i> 
+            <span class="menu-text">Product Management</span>
+        </a>
+        <a href="{{ route('admin.inventory.index') }}">
+            <i class="fas fa-warehouse"></i> 
+            <span class="menu-text">Inventory Management</span>
+        </a>
+        <a href="{{ route('admin.payments') }}">
+            <i class="fas fa-money-bill-wave"></i> 
+            <span class="menu-text">Payment Verification</span>
+        </a>
+        <a href="{{ route('discounts.index') }}">
             <i class="fas fa-percentage"></i> 
             <span class="menu-text">Discount Management</span>
         </a>
-<a href="{{ route('admin.orders') }}">
-    <i class="fas fa-shopping-cart"></i> 
-    <span class="menu-text">Order Management</span>
-</a>
-<a href="{{ route('admin.reviews') }}">
-    <i class="fas fa-star"></i> 
-    <span class="menu-text">Review Management</span>
-</a>
+        <a href="{{ route('admin.orders') }}">
+            <i class="fas fa-shopping-cart"></i> 
+            <span class="menu-text">Order Management</span>
+        </a>
+        <a href="{{ route('admin.reviews') }}">
+            <i class="fas fa-star"></i> 
+            <span class="menu-text">Review Management</span>
+        </a>
     </div>
 
     <div class="main-content" id="mainContent">
         @yield('content')
     </div>
 
+    @include('partials.footer')
+
+    <!-- Bootstrap core JavaScript -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Additional scripts section for blade file-specific scripts -->
+    @yield('scripts')
+
+    <!-- DataTables CSS and JS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.bootstrap4.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.bootstrap4.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+
     <script>
         function toggleSidebar() {
             var sidebar = document.getElementById('sidebar');
@@ -139,22 +167,5 @@
             mainContent.classList.toggle('collapsed');
         }
     </script>
-
-<!-- DataTables CSS and JS -->
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.bootstrap4.min.css">
-<link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
-
-<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-<script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.7.1/js/dataTables.buttons.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.bootstrap4.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.html5.min.js"></script>
-<script src="https://cdn.datatables.net/buttons/1.7.1/js/buttons.print.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-
 </body>
 </html>

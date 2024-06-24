@@ -6,8 +6,9 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\DiscountController;
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\CustomerController;
-
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -62,9 +63,24 @@ Route::resource('suppliers', SupplierController::class);
 
 Route::resource('discounts', DiscountController::class);
 
+Route::prefix('admin')->group(function () {
+    Route::resource('inventory', InventoryController::class);
+});
+
+Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
+
+Route::get('/admin/inventory/{id}', [InventoryController::class, 'show'])->name('inventory.show');
+
+Route::get('/admin/inventory', [InventoryController::class, 'index'])->name('admin.inventory.index');
+
+
 Route::get('/admin/suppliers/create', [SupplierController::class, 'create'])->name('suppliers.create');
 Route::get('/admin/suppliers', [SupplierController::class, 'index'])->name('admin.suppliers.index');
 
+// Charts
+Route::get('/admin/dashboard/category-product-chart', [CategoryController::class, 'productCounts']);
+
+// Customer
 Route::get('/customer/dashboard', function () {
     return view('customer.dashboard');
 })->name('customer.dashboard');
