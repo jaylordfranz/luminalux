@@ -6,6 +6,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\DiscountController;
+use App\Http\Controllers\CustomerController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -66,3 +68,31 @@ Route::get('/admin/suppliers', [SupplierController::class, 'index'])->name('admi
 Route::get('/customer/dashboard', function () {
     return view('customer.dashboard');
 })->name('customer.dashboard');
+
+Route::get('/', function () {
+    return view('home');
+});
+
+Route::get('/customer/profile', function () {
+    return view('customer.profile');
+})->name('customer.profile');
+
+Route::get('/customer/cart', function () {
+    return view('customer.cart');
+})->name('customer.cart');
+
+Route::get('/customer/orders', function () {
+    return view('customer.orders');
+})->name('customer.orders');
+
+Route::get('/customer/reviews', function () {
+    return view('customer.reviews');
+})->name('customer.reviews');
+
+
+
+
+Route::get('/skincare', [CustomerController::class, 'skincare'])->name('customer.skincare');
+Route::get('/makeup', [CustomerController::class, 'makeup'])->name('customer.makeup');
+Route::get('/haircare', [CustomerController::class, 'haircare'])->name('customer.haircare');
+Route::get('/bodycare', [CustomerController::class, 'bodycare'])->name('customer.bodycare');
