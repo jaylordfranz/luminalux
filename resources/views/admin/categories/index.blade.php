@@ -1,3 +1,4 @@
+
 @extends('layouts.admin')
 
 @section('content')
@@ -33,7 +34,7 @@
                         <td>
                             <a href="{{ route('categories.show', $category->id) }}" class="btn btn-info btn-sm">View</a>
                             <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                            <form action="{{ route('categories.destroy', $category->id) }}" method="POST" style="display:inline-block;">
+                            <form action="{{ route('categories.destroy', $category->id) }}" method="POST" class="delete-form" style="display:inline-block;">
                                 @csrf
                                 @method('DELETE')
                                 <button type="submit" class="btn btn-danger btn-sm">Delete</button>
@@ -62,7 +63,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="{{ route('categories.store') }}" method="POST">
+                <form id="addCategoryForm" action="{{ route('categories.store') }}" method="POST">
                     @csrf
                     <div class="modal-body">
                         <div class="form-group">
@@ -131,54 +132,5 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-
-    <script>
-        $(document).ready(function() {
-            var table = $('#categoriesTable').DataTable({
-                "paging": true,
-                "ordering": true,
-                "info": true,
-                "searching": true,
-                "order": [],
-                "language": {
-                    "search": "",
-                    "searchPlaceholder": "Search..."
-                },
-                dom: 'Bfrtip',
-                buttons: [
-                    {
-                        extend: 'excelHtml5',
-                        title: 'Categories'
-                    },
-                    {
-                        extend: 'pdfHtml5',
-                        title: 'Categories'
-                    }
-                ]
-            });
-
-            $('#searchInput').on('keyup', function() {
-                table.search($(this).val()).draw();
-            });
-
-            // Edit Category Modal
-            $('#categoriesTable').on('click', '.btn-warning', function(e) {
-                e.preventDefault();
-                var url = $(this).attr('href');
-                $.ajax({
-                    url: url,
-                    method: 'GET',
-                    success: function(response) {
-                        $('#editCategoryId').val(response.category.id);
-                        $('#editName').val(response.category.name);
-                        $('#editDescription').val(response.category.description);
-                        $('#editCategoryModal').modal('show');
-                    },
-                    error: function(error) {
-                        console.log('Error:', error);
-                    }
-                });
-            });
-        });
-    </script>
+    <script src="{{ asset('js/categories.js') }}"></script>
 @endsection

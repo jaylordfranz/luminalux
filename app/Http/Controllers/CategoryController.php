@@ -9,7 +9,7 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::paginate(20); // Using pagination
+        $categories = Category::paginate(10); // Using pagination
         return view('admin.categories.index', compact('categories'));
     }
 
@@ -34,6 +34,7 @@ class CategoryController extends Controller
     {
         return view('admin.categories.show', compact('category'));
     }
+
 
     public function edit(Category $category)
     {
