@@ -1,11 +1,14 @@
 @extends('layouts.admin')
 
+
 @section('content')
 @include('partials.header')
+
 
 <div class="main-content">
     <h2>Manage Suppliers</h2>
     <p>Here you can add new suppliers, update supplier details, and delete suppliers.</p>
+
 
     <!-- Add Supplier Button -->
     <div class="mb-3">
@@ -13,6 +16,7 @@
             Add Supplier
         </button>
     </div>
+
 
     <!-- DataTable with Search Bar and Pagination -->
     <table id="suppliersTable" class="table table-striped table-bordered" style="width:100%">
@@ -41,8 +45,7 @@
                 <td>
                     <a href="{{ route('suppliers.show', $supplier->id) }}" class="btn btn-info btn-sm">View</a>
                     <a href="{{ route('suppliers.edit', $supplier->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                    <form action="{{ route('suppliers.destroy', $supplier->id) }}" method="POST"
-                        style="display:inline-block;">
+                    <form action="{{ route('suppliers.destroy', $supplier->id) }}" method="POST" style="display:inline-block;">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-danger btn-sm">Delete</button>
@@ -53,17 +56,19 @@
         </tbody>
     </table>
 
+
     <!-- Pagination -->
     <div class="mt-3">
         {{ $suppliers->links() }}
     </div>
 </div>
 
+
 @include('partials.footer')
 
+
 <!-- Add Supplier Modal -->
-<div class="modal fade" id="addSupplierModal" tabindex="-1" role="dialog" aria-labelledby="addSupplierModalLabel"
-    aria-hidden="true">
+<div class="modal fade" id="addSupplierModal" tabindex="-1" role="dialog" aria-labelledby="addSupplierModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -72,7 +77,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{ route('suppliers.store') }}" method="POST">
+            <form action="{{ route('suppliers.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                     <div class="form-group">
@@ -101,11 +106,13 @@
     </div>
 </div>
 
+
 <!-- DataTables CSS and JS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.bootstrap4.min.css">
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
+
 
 <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
 <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
@@ -116,6 +123,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+
 
 <script>
     $(document).ready(function() {
@@ -142,6 +150,7 @@
             ]
         });
 
+
         $('#searchButton').on('click', function() {
             var value = $('#searchInput').val().trim();
             if (value) {
@@ -159,4 +168,8 @@
     });
 </script>
 
+
 @endsection
+
+
+

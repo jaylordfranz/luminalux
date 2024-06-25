@@ -86,7 +86,7 @@ Route::get('/customer/dashboard', function () {
 })->name('customer.dashboard');
 
 Route::get('/', function () {
-    return view('home');
+    return view('admin.dashboard');
 });
 
 Route::get('/customer/profile', function () {
