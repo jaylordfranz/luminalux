@@ -9,6 +9,8 @@ use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Auth\RegisterController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +22,21 @@ use App\Http\Controllers\AdminController;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+
+// Login Routes
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [LoginController::class, 'login']);
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+
+// Register Routes
+Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [RegisterController::class, 'register']);
+
+Route::get('/customer/dashboard', function () {
+    return view('customer.dashboard');
+})->middleware('auth');
+
+Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
 
 // Admin Dashboard Routes
 Route::get('/admin', function () {
@@ -86,7 +103,7 @@ Route::get('/customer/dashboard', function () {
 })->name('customer.dashboard');
 
 Route::get('/', function () {
-    return view('admin.dashboard');
+    return view('auth.login');
 });
 
 Route::get('/customer/profile', function () {
