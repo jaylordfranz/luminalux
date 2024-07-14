@@ -2,58 +2,131 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Models\Product;
 use App\Models\Inventory;
+use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Yajra\DataTables\Facades\DataTables;
 
 class InventoryController extends Controller
 {
-    public function index()
+    // Backend API endpoints
+    public function apiIndex(): JsonResponse
     {
-        $inventories = Inventory::all();
-        return view('admin.inventory.index', compact('inventories'));
+        $inventories = Inventory::with('product')->paginate(10);
+        return response()->json($inventories);
+    }
+
+    public function apiStore(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'quantity' => 'required|integer|min:0',
+        ]);
+
+        $inventory = Inventory::create($validated);
+
+        return response()->json([
+            'message' => 'Inventory created successfully.',
+            'inventory' => $inventory,
+        ], 201);
+    }
+
+    public function apiShow(Inventory $inventory): JsonResponse
+    {
+        $inventory->load('product');
+        return response()->json($inventory);
+    }
+
+    public function apiUpdate(Request $request, Inventory $inventory): JsonResponse
+    {
+        $validated = $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'quantity' => 'required|integer|min:0',
+        ]);
+
+        $inventory->update($validated);
+
+        return response()->json([
+            'message' => 'Inventory updated successfully.',
+            'inventory' => $inventory,
+        ]);
+    }
+
+    public function apiDestroy(Inventory $inventory): JsonResponse
+    {
+        $inventory->delete();
+
+        return response()->json([
+            'message' => 'Inventory deleted successfully.',
+        ]);
+    }
+
+    // Frontend views and DataTables integration
+    public function index(Request $request)
+    {
+        $inventories = Inventory::with('product')->latest()->paginate(10);
+        $products = Product::all(); // Fetch all products
+
+        if ($request->ajax()) {
+            return DataTables::of($inventories)
+                ->addColumn('product_name', function ($inventory) {
+                    return $inventory->product->name;
+                })
+                ->addColumn('action', function ($inventory) {
+                    $actionBtn = '<a href="' . route('inventory.show', $inventory->id) . '" class="btn btn-info btn-sm">View</a> ' .
+                        '<a href="' . route('inventory.edit', $inventory->id) . '" class="btn btn-warning btn-sm">Edit</a> ' .
+                        '<form action="' . route('inventory.destroy', $inventory->id) . '" method="POST" style="display: inline;">' .
+                        '@csrf @method("DELETE")' .
+                        '<button type="submit" class="btn btn-danger btn-sm">Delete</button>' .
+                        '</form>';
+                    return $actionBtn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
+
+        return view('admin.inventory.index', compact('inventories', 'products'));
     }
 
     public function create()
     {
-        // Assuming you pass a list of products to choose from
-        $products = \App\Models\Product::all();
+        $products = Product::all();
         return view('admin.inventory.create', compact('products'));
     }
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer|min:1',
+            'quantity' => 'required|integer|min:0',
         ]);
 
-        Inventory::create([
-            'product_id' => $request->product_id,
-            'quantity' => $request->quantity,
-            'last_updated' => now(),
-        ]);
+        Inventory::create($validated);
 
-        return redirect()->route('inventory.index')->with('success', 'Inventory added successfully.');
+        return redirect()->route('inventory.index')->with('success', 'Inventory created successfully.');
+    }
+
+    public function show(Inventory $inventory)
+    {
+        $inventory->load('product');
+        return view('admin.inventory.show', compact('inventory'));
     }
 
     public function edit(Inventory $inventory)
     {
-        $products = \App\Models\Product::all();
+        $products = Product::all();
         return view('admin.inventory.edit', compact('inventory', 'products'));
     }
 
     public function update(Request $request, Inventory $inventory)
     {
-        $request->validate([
+        $validated = $request->validate([
             'product_id' => 'required|exists:products,id',
-            'quantity' => 'required|integer|min:1',
+            'quantity' => 'required|integer|min:0',
         ]);
 
-        $inventory->update([
-            'product_id' => $request->product_id,
-            'quantity' => $request->quantity,
-            'last_updated' => now(),
-        ]);
+        $inventory->update($validated);
 
         return redirect()->route('inventory.index')->with('success', 'Inventory updated successfully.');
     }
@@ -61,12 +134,7 @@ class InventoryController extends Controller
     public function destroy(Inventory $inventory)
     {
         $inventory->delete();
-        return redirect()->route('inventory.index')->with('success', 'Inventory deleted successfully.');
-    }
 
-    public function show($id)
-    {
-        $inventory = Inventory::findOrFail($id);
-        return view('admin.inventory.show', compact('inventory'));
+        return redirect()->route('inventory.index')->with('success', 'Inventory deleted successfully.');
     }
 }

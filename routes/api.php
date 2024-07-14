@@ -2,54 +2,66 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\BrandController;
-use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\SupplierController;
-use App\Http\Controllers\DiscountController;
+use App\Http\Controllers\InventoryController;
+use App\Http\Controllers\ProductController;
+use App\Http\Controllers\CustomerProfileController;
+use App\Http\Controllers\BillingAddressController;
+use App\Http\Controllers\UserController;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+Route::middleware('auth:api')->group(function () {
+    Route::get('/users', [UserController::class, 'index']);
+    Route::get('/users/{id}', [UserController::class, 'show']);
+    Route::put('/users/{id}', [UserController::class, 'update']);
+    Route::put('/users/{id}/deactivate', [UserController::class, 'deactivate']);
 });
 
-// Products API Resource Route
-Route::apiResource('products', ProductController::class);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::resource('categories', CategoryController::class)->except([
+        'create', 'edit', 'show'
+    ]);
+    
 
-// Brands API Endpoints
-Route::get('/brands', [BrandController::class, 'index']);
-Route::get('/brands/{brand}', [BrandController::class, 'show']);
-Route::post('/brands', [BrandController::class, 'store']);
-Route::put('/brands/{brand}', [BrandController::class, 'update']);
-Route::delete('/brands/{brand}', [BrandController::class, 'destroy']);
+    //Route::get('categories/{category}/product-counts', [CategoryController::class, 'productCounts']);
+});
 
-// Categories API Endpoints
-Route::get('/categories', [CategoryController::class, 'index']);
-Route::get('/categories/{category}', [CategoryController::class, 'show']);
-Route::post('/categories', [CategoryController::class, 'store']);
-Route::put('/categories/{category}', [CategoryController::class, 'update']);
-Route::delete('/categories/{category}', [CategoryController::class, 'destroy']);
+// Catgories API Endpoints
+Route::get('categories', [CategoryController::class, 'apiIndex']);
+Route::post('categories', [CategoryController::class, 'apiStore']);
+Route::get('categories/{category}', [CategoryController::class, 'apiShow']);
+Route::put('categories/{category}', [CategoryController::class, 'apiUpdate']);
+Route::delete('categories/{category}', [CategoryController::class, 'apiDestroy']);
+Route::delete('/categories/{category}', 'CategoryController@destroy')->name('categories.destroy');
+Route::get('categories-product-counts', [CategoryController::class, 'apiProductCounts']);
 
-// Suppliers API Endpoints
-Route::get('/suppliers', [SupplierController::class, 'index']);
-Route::get('/suppliers/{supplier}', [SupplierController::class, 'show']);
-Route::post('/suppliers', [SupplierController::class, 'store']);
-Route::put('/suppliers/{supplier}', [SupplierController::class, 'update']);
-Route::delete('/suppliers/{supplier}', [SupplierController::class, 'destroy']);
+// Product API Endpoints
+Route::get('products', [ProductController::class, 'apiIndex']);
+Route::post('products', [ProductController::class, 'apiStore']);
+Route::get('products/{product}', [ProductController::class, 'apiShow']);
+Route::put('products/{product}', [ProductController::class, 'apiUpdate']);
+Route::delete('products/{product}', [ProductController::class, 'apiDestroy']);
 
-// Discounts API Endpoints
-Route::get('/discounts', [DiscountController::class, 'index']);
-Route::get('/discounts/{discount}', [DiscountController::class, 'show']);
-Route::post('/discounts', [DiscountController::class, 'store']);
-Route::put('/discounts/{discount}', [DiscountController::class, 'update']);
-Route::delete('/discounts/{discount}', [DiscountController::class, 'destroy']);
+// Inventory API Endpoints
+Route::get('inventory', [InventoryController::class, 'apiIndex']);
+Route::post('inventory', [InventoryController::class, 'apiStore']);
+Route::get('inventory/{inventory}', [InventoryController::class, 'apiShow']);
+Route::put('inventory/{inventory}', [InventoryController::class, 'apiUpdate']);
+Route::delete('inventory/{inventory}', [InventoryController::class, 'apiDestroy']);
+
+Route::apiResource('inventories', InventoryController::class);
+
+//Customer Products
+Route::get('/customer/products', [CustomerProductController::class, 'index']);
+Route::get('/customer/products/{product}', [CustomerProductController::class, 'show']);
+Route::get('/customer/products', 'App\Http\Controllers\CustomerProductController@index')->name('api.customer.products');
+
+// Cart API Endpoints
+Route::post('/carts', [CartController::class, 'store'])->name('api.carts.store');
+
+// Profile - Billing Address
+Route::post('/api/billing-addresses', 'BillingAddressController@store')->name('billing-addresses.store');
+
+// Spatie Search
+Route::get('/autocomplete', [SearchController::class, 'autocomplete'])->name('autocomplete');
+Route::get('/search', [SearchController::class, 'search'])->name('search');
+

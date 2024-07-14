@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login and Register Form Styling</title>
+    <title>Login Form</title>
     <!-- Bootstrap CSS -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome CSS -->
@@ -25,38 +25,46 @@
             width: 350px;
             max-width: 100%;
             background-color: #fff;
-            padding: 20px;
+            padding: 40px 30px;
         }
         .card-title {
-            font-size: 1.8em;
+            font-size: 2.5em;
             font-weight: bold;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
             color: #333;
         }
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         .form-group label {
             font-size: 1.1em;
             font-weight: bold;
+            color: #666;
         }
         .form-control {
             border: 1px solid #ccc;
             border-radius: 5px;
-            padding: 10px;
+            padding: 15px;
             width: 100%;
             font-size: 1.1em;
+            color: #333;
+            transition: border-color 0.3s;
+        }
+        .form-control:focus {
+            border-color: #007bff;
+            outline: none;
         }
         .btn-primary {
             background-color: #007bff;
             border: none;
-            padding: 12px;
+            padding: 15px;
             border-radius: 5px;
             width: 100%;
             font-size: 1.1em;
             font-weight: bold;
             cursor: pointer;
+            transition: background-color 0.3s;
         }
         .btn-primary:hover {
             background-color: #0056b3;
@@ -65,7 +73,7 @@
             text-align: center;
             margin-top: 20px;
             font-size: 0.9em;
-            color: #777;
+            color: #666;
         }
         .footer-text a {
             color: #007bff;
@@ -76,12 +84,60 @@
         }
         .alert {
             color: red;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+        .divider {
+            margin: 20px 0;
+            border-bottom: 1px solid #ccc;
+            text-align: center;
+            position: relative;
+        }
+        .divider span {
+            background-color: #fff;
+            padding: 0 10px;
+            position: relative;
+            top: -14px;
+            z-index: 1;
+        }
+        .divider:before {
+            content: "";
+            border-bottom: 1px solid #ccc;
+            width: 100%;
+            position: absolute;
+            top: 50%;
+            z-index: 0;
+        }
+        .google-login {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 15px;
+        }
+        .google-login a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            background-color: #000;
+            color: #fff;
+            border: 1px solid #000;
+            padding: 15px;
+            border-radius: 5px;
+            width: 100%;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .google-login a:hover {
+            background-color: #333;
         }
     </style>
 </head>
 <body>
     <div class="card">
-        <h2 class="card-title">Login</h2>
+        <h2 class="card-title">Sign In</h2>
         <form method="POST" action="{{ route('login') }}">
             @csrf
 
@@ -101,12 +157,19 @@
                 @enderror
             </div>
 
-            <button type="submit" class="btn btn-primary">Login</button>
+            <button type="submit" class="btn btn-primary">Sign In</button>
         </form>
 
+        <div class="divider"><span>OR</span></div>
+
+        <div class="google-login">
+            <a href="{{ route('google-auth') }}">
+                Login with Google
+            </a>
+        </div>
+
         <div class="footer-text">
-            <p>Don't have an account? <a href="{{ route('register') }}">Register here</a></p>
-            <a href="#">Forgot Password?</a>
+            <p>Don't have an account? <a href="{{ route('register') }}">Sign Up</a></p>
         </div>
     </div>
 </body>

@@ -9,8 +9,12 @@ use App\Http\Controllers\DiscountController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\CustomerController;
 use App\Http\Controllers\AdminController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CustomerProductController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\CustomerProfileController;
+use App\Http\Controllers\BillingAddressController;
 
 /*
 |--------------------------------------------------------------------------
@@ -23,20 +27,12 @@ use App\Http\Controllers\Auth\RegisterController;
 |
 */
 
-// Login Routes
-Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [LoginController::class, 'login']);
-Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
-
-// Register Routes
-Route::get('/register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('/register', [RegisterController::class, 'register']);
-
-Route::get('/customer/dashboard', function () {
-    return view('customer.dashboard');
-})->middleware('auth');
-
-Route::get('/', [LoginController::class, 'showLoginForm'])->name('login');
+// User Management
+Route::resource('users', UserController::class);
+Route::get('/admin/users', [UserController::class, 'index'])->name('users.index');
+Route::get('/admin/users/{id}', [UserController::class, 'show'])->name('users.show');
+Route::get('/admin/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
+Route::put('/admin/users/{id}/deactivate', [UserController::class, 'deactivate'])->name('users.deactivate');
 
 // Admin Dashboard Routes
 Route::get('/admin', function () {
@@ -44,7 +40,7 @@ Route::get('/admin', function () {
 })->name('admin.dashboard');
 
 Route::get('/admin/users', function () {
-    return view('admin.users');
+    return view('admin.users.index');
 })->name('admin.users');
 
 Route::get('/admin/products', function () {
@@ -65,6 +61,9 @@ Route::get('/admin/reviews', function () {
 
 // Resource route for category management
 Route::resource('categories', CategoryController::class);
+
+Route::delete('categories/{category}', [CategoryController::class, 'apiDestroy']);
+Route::post('categories/importExcel', [CategoryController::class, 'importExcel'])->name('categories.importExcel');
 
 Route::resource('products', ProductController::class);
 
@@ -98,13 +97,24 @@ Route::get('/admin/suppliers', [SupplierController::class, 'index'])->name('admi
 Route::get('/admin/dashboard/category-product-chart', [CategoryController::class, 'productCounts']);
 
 // Customer
-Route::get('/customer/dashboard', function () {
-    return view('customer.dashboard');
-})->name('customer.dashboard');
+Route::get('/register', function () {
+    return view('customer.register');
+})->name('register');
 
-Route::get('/', function () {
-    return view('auth.login');
+Route::get('/login', function () {
+    return view('customer.login');
+})->name('login');
+
+Route::post('/api/register', [AuthController::class, 'register']);
+Route::post('/api/login', [AuthController::class, 'login']);
+
+Route::middleware(['auth:customer'])->group(function () {
+    Route::get('/customer/dashboard', function () {
+        return view('customer.dashboard');
+    })->name('customer.dashboard');
 });
+
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::get('/customer/profile', function () {
     return view('customer.profile');
@@ -129,3 +139,43 @@ Route::get('/skincare', [CustomerController::class, 'skincare'])->name('customer
 Route::get('/makeup', [CustomerController::class, 'makeup'])->name('customer.makeup');
 Route::get('/haircare', [CustomerController::class, 'haircare'])->name('customer.haircare');
 Route::get('/bodycare', [CustomerController::class, 'bodycare'])->name('customer.bodycare');
+
+// Customer Profile
+Route::get('/customer/profile', [CustomerProfileController::class, 'index'])->name('customer.profile');
+
+Route::middleware('auth:customer')->group(function () {
+    Route::post('/billing-addresses/store', [BillingAddressController::class, 'store'])->name('billing-addresses.store');
+    Route::delete('/billing-addresses/{id}', [BillingAddressController::class, 'destroy'])->name('billing-addresses.destroy');
+});
+
+Route::middleware('auth:customer')->group(function () {
+    Route::get('/customer/profile', [CustomerProfileController::class, 'edit'])->name('customer.profile');
+    Route::put('/customer/profile/update', [CustomerProfileController::class, 'update'])->name('customer.profile.update');
+});
+
+Route::middleware(['auth:customer'])->group(function () {
+    // Routes for edit profile and billing addresses
+    // Route::get('/customer/profile', [CustomerProfileController::class, 'index'])->name('customer.profile');
+    Route::put('/customer/profile/update', [CustomerProfileController::class, 'update'])->name('customer.profile.update');
+    //Route::post('/customer/profile/store', [BillingAddressController::class, 'store'])->name('customer.profile.store');
+    // Route::delete('/billing-addresses/{id}', [BillingAddressController::class, 'destroy'])->name('billing-addresses.destroy');
+    // Route for storing billing addresses
+});
+
+Route::post('/customer/address', [BillingAddressController::class, 'store'])->name('customer.address.store');
+
+// View product details
+// routes/web.php
+Route::get('/customer/product-details/{id}', [CustomerProductController::class, 'show'])->name('customer.product-details');
+// routes/web.php
+Route::get('customer/product-details/{product}', [ProductController::class, 'show'])->name('customer.product-details');
+Route::get('/customer/dashboard', [CustomerProductController::class, 'dashboard'])->name('customer.dashboard');
+Route::prefix('customer')->group(function () {
+    Route::post('/add-to-cart/{id}', [CustomerProductController::class, 'addToCart'])
+         ->name('customer.add_to_cart');
+});
+
+Route::resource('carts', CartController::class);
+
+//Spatie Search
+Route::get('/search', [SearchController::class, 'search'])->name('search');

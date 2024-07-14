@@ -12,7 +12,7 @@ class Category extends Model
     protected $fillable = [
         'name',
         'description',
-        'images',
+        'images', // If you want to add images, adjust the migration and model accordingly
     ];
 
     protected $casts = [
