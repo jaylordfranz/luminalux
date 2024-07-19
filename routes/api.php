@@ -65,3 +65,8 @@ Route::post('/api/billing-addresses', 'BillingAddressController@store')->name('b
 Route::get('/autocomplete', [SearchController::class, 'autocomplete'])->name('autocomplete');
 Route::get('/search', [SearchController::class, 'search'])->name('search');
 
+// Cart
+Route::middleware('auth:api')->group(function () {
+    Route::get('/products', [ProductController::class, 'index'])->name('api.customer.products');
+    Route::get('/products/search', [ProductController::class, 'search'])->name('api.customer.search');
+});

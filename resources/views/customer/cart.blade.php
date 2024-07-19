@@ -1,4 +1,3 @@
-
 @extends('layouts.app')
 
 @section('content')
@@ -14,97 +13,122 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
     <style>
         .cart-container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 50px auto;
             padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #f9f9f9;
         }
+
         .item-row {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
             border-bottom: 1px solid #eee;
-            padding: 10px 0;
+            background-color: #fff;
+            border-radius: 5px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
         .item-image {
-            width: 100px;
-            height: 100px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 2px solid #000;
+            width: 120px;
+            height: 120px;
+            background-size: cover;
+            background-position: center;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            margin-right: 15px;
         }
+
         .item-details {
-            margin-left: 20px;
+            flex: 1;
+            padding: 0 10px;
         }
+
         .item-name {
             font-size: 18px;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            color: #333;
         }
+
         .item-price {
             font-size: 16px;
-            color: #777;
+            color: #555;
             margin-bottom: 5px;
         }
+
         .item-quantity {
             font-size: 14px;
-            color: #555;
+            color: #777;
         }
+
         .item-actions {
             margin-top: 10px;
         }
+
         .btn-remove {
-            color: red;
+            color: #dc3545;
             font-size: 14px;
             margin-right: 10px;
+            border: none;
+            background: none;
         }
+
         .btn-update {
-            color: green;
+            color: #28a745;
             font-size: 14px;
+            border: none;
+            background: none;
         }
+
         .btn-checkout {
             margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-checkout:hover {
+            background-color: #0056b3;
+        }
+
+        .btn-remove:hover, .btn-update:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
     <div class="container cart-container">
         <h2>Your Shopping Cart</h2>
+
+        @forelse($cartItems as $cartItem)
         <div class="item-row">
-            <div class="item-image" style="background-color: #ccc;"></div>
+            <div class="item-image" style="background-image: url('{{ $cartItem->product->image_url }}');"></div>
             <div class="item-details">
-                <div class="item-name">COSRX Low pH Good Morning Gel Cleanser</div>
-                <div class="item-price">$12.00</div>
-                <div class="item-quantity">Quantity: 2</div>
+                <div class="item-name">{{ $cartItem->product->name }}</div>
+                <div class="item-price">${{ number_format($cartItem->product->price, 2) }}</div>
+                <div class="item-quantity">Quantity: {{ $cartItem->quantity }}</div>
                 <div class="item-actions">
-                    <button class="btn btn-remove"><i class="fas fa-trash-alt"></i> Remove</button>
-                    <button class="btn btn-update"><i class="fas fa-sync-alt"></i> Update</button>
+                    <form action="{{ route('customer.remove-from-cart', $cartItem->id) }}" method="POST" style="display:inline;">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="btn btn-remove"><i class="fas fa-trash-alt"></i> Remove</button>
+                    </form>
+                    <a href="{{ route('customer.update-cart', $cartItem->id) }}" class="btn btn-update"><i class="fas fa-sync-alt"></i> Update</a>
                 </div>
             </div>
         </div>
-        <div class="item-row">
-            <div class="item-image" style="background-color: #ccc;"></div>
-            <div class="item-details">
-                <div class="item-name">COSRX Advanced Snail 96 Mucin Power Essence</div>
-                <div class="item-price">$21.00</div>
-                <div class="item-quantity">Quantity: 1</div>
-                <div class="item-actions">
-                    <button class="btn btn-remove"><i class="fas fa-trash-alt"></i> Remove</button>
-                    <button class="btn btn-update"><i class="fas fa-sync-alt"></i> Update</button>
-                </div>
-            </div>
-        </div>
-        <div class="item-row">
-            <div class="item-image" style="background-color: #ccc;"></div>
-            <div class="item-details">
-                <div class="item-name">COSRX Acne Pimple Master Patch</div>
-                <div class="item-price">$5.00</div>
-                <div class="item-quantity">Quantity: 3</div>
-                <div class="item-actions">
-                    <button class="btn btn-remove"><i class="fas fa-trash-alt"></i> Remove</button>
-                    <button class="btn btn-update"><i class="fas fa-sync-alt"></i> Update</button>
-                </div>
-            </div>
-        </div>
+        @empty
+        <p>Your cart is empty.</p>
+        @endforelse
+
         <button class="btn btn-primary btn-checkout"><i class="fas fa-shopping-cart"></i> Checkout</button>
     </div>
 

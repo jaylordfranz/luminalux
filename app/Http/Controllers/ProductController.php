@@ -10,6 +10,13 @@ use Yajra\DataTables\Facades\DataTables;
 
 class ProductController extends Controller
 {
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+        $products = Product::where('name', 'like', "%$query%")->get();
+
+        return response()->json(['data' => $products]);
+    }
     // Backend API endpoints
     public function apiIndex(): JsonResponse
     {

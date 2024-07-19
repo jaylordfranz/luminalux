@@ -15,6 +15,8 @@ use App\Http\Controllers\CustomerProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CustomerProfileController;
 use App\Http\Controllers\BillingAddressController;
+use App\Http\Controllers\CheckoutController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -179,3 +181,27 @@ Route::resource('carts', CartController::class);
 
 //Spatie Search
 Route::get('/search', [SearchController::class, 'search'])->name('search');
+
+// Cart
+Route::middleware(['auth'])->group(function () {
+    Route::post('/cart/store', [CartController::class, 'store'])->name('cart.store');
+    Route::get('/cart', [CartController::class, 'index'])->name('customer.cart');
+    Route::delete('/cart/{id}', [CartController::class, 'destroy'])->name('cart.destroy');
+});
+
+Route::post('/cart/add', [CartController::class, 'addToCart'])->name('customer.add-to-cart')->middleware('auth:customer');
+
+// Route to the shopping cart page
+Route::get('/cart', [CartController::class, 'showCart'])->name('customer.cart')->middleware('auth:customer');
+
+// Route to remove an item from the cart
+Route::delete('/cart/{id}', [CartController::class, 'removeFromCart'])->name('customer.remove-from-cart');
+
+// Route to show the form for updating a cart item
+Route::get('/cart/update/{id}', [CartController::class, 'showUpdateForm'])->name('customer.update-cart');
+
+// Route to handle the update request
+Route::post('/cart/update/{id}', [CartController::class, 'updateCart'])->name('customer.update-cart.submit');
+
+// Checkout
+Route::get('/checkout', [CheckoutController::class, 'index'])->name('customer.checkout');

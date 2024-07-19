@@ -2,120 +2,85 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cart;
-use App\Models\Product;
-use App\Models\Customer;
 use Illuminate\Http\Request;
-use Yajra\DataTables\Facades\DataTables;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
+use App\Models\Cart;
+use Illuminate\Support\Facades\Auth;
 
 class CartController extends Controller
 {
-    public function index(Request $request)
-{
-    $carts = Cart::with('customer', 'product')->latest()->paginate(10);
-
-    if ($request->ajax()) {
-        return DataTables::of($carts)
-            ->addColumn('customer_name', function ($cart) {
-                return $cart->customer->name;
-            })
-            ->addColumn('product_name', function ($cart) {
-                return $cart->product->name;
-            })
-            ->addColumn('action', function ($cart) {
-                $actionBtn = '<a href="#" class="btn btn-info btn-sm">View</a> ' .
-                    '<a href="#" class="btn btn-warning btn-sm">Edit</a> ' .
-                    '<form action="' . route('carts.destroy', $cart->id) . '" method="POST" style="display: inline;">' .
-                    '@csrf @method("DELETE")' .
-                    '<button type="submit" class="btn btn-danger btn-sm">Delete</button>' .
-                    '</form>';
-                return $actionBtn;
-            })
-            ->rawColumns(['action'])
-            ->make(true);
+    public function __construct()
+    {
+        $this->middleware('auth:customer'); // Ensure only authenticated customers can access this controller
     }
 
-    return view('admin.carts.index', compact('carts'));
-}
-
-    public function apiIndex(): JsonResponse
+    public function addToCart(Request $request)
     {
-        $carts = Cart::with('customer', 'product')->paginate(10);
-        return response()->json($carts);
-    }
+        // Check if the user is authenticated
+        if (!Auth::guard('customer')->check()) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
+        $customerId = Auth::guard('customer')->id();
+
+        // Validate the request
+        $request->validate([
             'product_id' => 'required|exists:products,id',
             'quantity' => 'required|integer|min:1'
         ]);
 
-        // Fetch logged-in customer ID
-        $customerId = Auth::id();
+        // Add to cart or update if already exists
+        $cart = Cart::updateOrCreate(
+            [
+                'customer_id' => $customerId,
+                'product_id' => $request->product_id
+            ],
+            [
+                'quantity' => $request->quantity
+            ]
+        );
 
-        // Create new cart entry
-        $cart = Cart::create([
-            'customer_id' => $customerId,
-            'product_id' => $validated['product_id'],
-            'quantity' => $validated['quantity']
-        ]);
-
-        return redirect()->route('carts.index')->with('success', 'Item added to cart successfully.');
+        return response()->json(['success' => true, 'message' => 'Product added to cart successfully!']);
     }
 
-    public function apiStore(Request $request): JsonResponse
+    public function showCart()
     {
-        $validated = $request->validate([
-            'product_id' => 'required|exists:products,id',
+        // Fetch cart items for the logged-in customer
+        $customerId = Auth::guard('customer')->id();
+        $cartItems = Cart::where('customer_id', $customerId)->with('product')->get();
+
+        return view('customer.cart', ['cartItems' => $cartItems]);
+    }
+
+    public function removeFromCart($id)
+{
+    $customerId = Auth::guard('customer')->id();
+    Cart::where('id', $id)->where('customer_id', $customerId)->delete();
+    
+    return redirect()->route('customer.cart')->with('success', 'Item removed from cart.');
+}
+
+public function showUpdateForm($id)
+    {
+        $customerId = Auth::guard('customer')->id();
+        $cartItem = Cart::where('id', $id)->where('customer_id', $customerId)->firstOrFail();
+
+        return view('customer.update-cart', ['cartItem' => $cartItem]);
+    }
+
+    // Method to handle the update request
+    public function updateCart(Request $request, $id)
+    {
+        $request->validate([
             'quantity' => 'required|integer|min:1',
         ]);
 
-        // Fetch logged-in customer ID
-        $customerId = Auth::id();
+        $customerId = Auth::guard('customer')->id();
+        $cartItem = Cart::where('id', $id)->where('customer_id', $customerId)->firstOrFail();
 
-        // Create new cart entry
-        $cart = Cart::create([
-            'customer_id' => $customerId,
-            'product_id' => $validated['product_id'],
-            'quantity' => $validated['quantity']
-        ]);
+        // Update the cart item quantity
+        $cartItem->quantity = $request->input('quantity');
+        $cartItem->save();
 
-        return response()->json([
-            'message' => 'Item added to cart successfully.',
-            'cart' => $cart,
-        ], 201);
+        return redirect()->route('customer.cart')->with('success', 'Cart item updated successfully.');
     }
-
-    public function apiShow(Cart $cart): JsonResponse
-    {
-        return response()->json($cart->load('customer', 'product'));
-    }
-
-    public function apiUpdate(Request $request, Cart $cart): JsonResponse
-{
-    $validated = $request->validate([
-        'customer_id' => 'required|exists:customers,id',
-        'product_id' => 'required|exists:products,id',
-        'quantity' => 'required|integer|min:1',
-    ]);
-
-    $cart->update($validated);
-
-    return response()->json([
-        'message' => 'Cart updated successfully.',
-        'cart' => $cart,
-    ]);
-}
-
-public function apiDestroy(Cart $cart): JsonResponse
-{
-    $cart->delete();
-
-    return response()->json([
-        'message' => 'Item removed from cart successfully.',
-    ]);
-}
 }
