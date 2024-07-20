@@ -1,25 +1,36 @@
-@extends('layouts.admin')
+@extends('layouts.app')
 
 @section('content')
-@include('partials.header')
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">User Details</div>
 
-<div class="main-content">
-    <h2>User Details</h2>
+                <div class="card-body">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr>
+                                <th style="width: 30%;">Name</th>
+                                <td>{{ $customer->name }}</td>
+                            </tr>
+                            <tr>
+                                <th>Email</th>
+                                <td>{{ $customer->email }}</td>
+                            </tr>
 
-    <div class="user-details">
-        <p><strong>ID:</strong> {{ $user->id }}</p>
-        <p><strong>Name:</strong> {{ $user->name }}</p>
-        <p><strong>Email:</strong> {{ $user->email }}</p>
-        <p><strong>Role:</strong> {{ $user->role }}</p>
-        <p><strong>Status:</strong> {{ $user->active ? 'Active' : 'Inactive' }}</p>
+                            <tr>
+                                <th>Status</th>
+                                <td>{{ ($customer->status) }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <a href="{{ route('users.index') }}" class="btn btn-secondary mt-3">Back</a>
+
+                </div>
+            </div>
+        </div>
     </div>
-
-    <a href="{{ route('users.edit', $user->id) }}" class="btn btn-primary">Edit</a>
-    <form action="{{ route('users.deactivate', $user->id) }}" method="POST" style="display:inline;">
-        @csrf
-        @method('PUT')
-        <button type="submit" class="btn btn-danger">Deactivate</button>
-    </form>
 </div>
 
 @include('partials.footer')

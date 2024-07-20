@@ -70,3 +70,11 @@ Route::middleware('auth:api')->group(function () {
     Route::get('/products', [ProductController::class, 'index'])->name('api.customer.products');
     Route::get('/products/search', [ProductController::class, 'search'])->name('api.customer.search');
 });
+
+// MP7
+Route::get('users', [UserController::class, 'apiIndex']);
+Route::post('users', [UserController::class, 'apiStore']);
+Route::get('users/{customer}', [UserController::class, 'apiShow']);
+Route::put('users/{customer}', [UserController::class, 'apiUpdate']);
+Route::delete('users/{customer}', [UserController::class, 'apiDestroy']);
+

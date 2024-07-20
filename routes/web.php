@@ -226,3 +226,16 @@ Route::get('/admin/orders/{id}/edit', [AdminOrderController::class, 'edit'])->na
 Route::put('/admin/orders/{id}', [AdminOrderController::class, 'update'])->name('admin.orders.update');
 
 Route::get('/order-history', [OrderController::class, 'index'])->middleware('auth')->name('order.history');
+
+// Resource route for Users
+Route::resource('users', UserController::class);
+
+// Additional routes for user management
+Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users.index');
+Route::get('/admin/users/create', [UserController::class, 'create'])->name('admin.users.create');
+Route::post('/admin/users', [UserController::class, 'store'])->name('admin.users.store');
+Route::get('/admin/users/{customer}', [UserController::class, 'show'])->name('admin.users.show');
+Route::get('/admin/users/{customer}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
+Route::put('/admin/users/{customer}', [UserController::class, 'update'])->name('users.update');
+Route::delete('/admin/users/{customer}', [UserController::class, 'destroy'])->name('admin.users.destroy');
+Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users'); // Updated route

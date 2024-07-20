@@ -15,6 +15,7 @@
                     <th>ID</th>
                     <th>Name</th>
                     <th>Email</th>
+                    <th>Status</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -24,14 +25,16 @@
                         <td>{{ $customer->id }}</td>
                         <td>{{ $customer->name }}</td>
                         <td>{{ $customer->email }}</td>
+                        <td>{{ $customer->status }}</td>
                         <td>
                             <a href="{{ route('users.show', $customer->id) }}" class="btn btn-info btn-sm">View</a>
                             <a href="{{ route('users.edit', $customer->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                            <form action="{{ route('users.destroy', $customer->id) }}" method="POST" class="delete-form" style="display:inline-block;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                            </form>
+                            <form action="{{ route('admin.users.destroy', $customer->id) }}" method="POST" class="delete-form" style="display:inline-block;">
+    @csrf
+    @method('DELETE')
+    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+</form>
+
                         </td>
                     </tr>
                 @endforeach

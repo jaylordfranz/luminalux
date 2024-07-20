@@ -22,16 +22,18 @@ class UserController extends Controller
             'name' => 'required|max:255',
             'email' => 'required|email|unique:customers,email',
             'password' => 'required|min:8',
+            'status' => 'nullable|string', // Add validation for status
         ]);
 
         $customer = Customer::create([
             'name' => $validated['name'],
             'email' => $validated['email'],
             'password' => bcrypt($validated['password']),
+            'status' => $validated['status'], // Assign status if provided
         ]);
 
         return response()->json([
-            'message' => 'User created successfully.',
+            'message' => 'Customer created successfully.',
             'customer' => $customer,
         ], 201);
     }
@@ -47,6 +49,7 @@ class UserController extends Controller
             'name' => 'required|max:255',
             'email' => 'required|email|unique:customers,email,' . $customer->id,
             'password' => 'nullable|min:8',
+            'status' => 'nullable|string', // Add validation for status
         ]);
 
         if ($validated['password']) {
@@ -55,10 +58,15 @@ class UserController extends Controller
             unset($validated['password']);
         }
 
-        $customer->update($validated);
+        $customer->update([
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => isset($validated['password']) ? $validated['password'] : $customer->password,
+            'status' => $validated['status'], // Update status
+        ]);
 
         return response()->json([
-            'message' => 'User updated successfully.',
+            'message' => 'Customer updated successfully.',
             'customer' => $customer,
         ]);
     }
@@ -68,7 +76,7 @@ class UserController extends Controller
         $customer->delete();
 
         return response()->json([
-            'message' => 'User deleted successfully.',
+            'message' => 'Customer deleted successfully.',
         ]);
     }
 
@@ -80,9 +88,8 @@ class UserController extends Controller
         if ($request->ajax()) {
             return DataTables::of($customers)
                 ->addColumn('action', function ($customer) {
-                    $actionBtn = '<a href="#" class="btn btn-info btn-sm">View</a> ' .
-                        '<a href="#" class="btn btn-warning btn-sm">Edit</a> ' .
-                        '<form action="#" method="POST" style="display: inline;">' .
+                    $actionBtn = '<a href="' . route('users.edit', $customer->id) . '" class="btn btn-warning btn-sm">Edit</a> ' .
+                        '<form action="' . route('users.destroy', $customer->id) . '" method="POST" style="display: inline;">' .
                         '@csrf @method("DELETE")' .
                         '<button type="submit" class="btn btn-danger btn-sm">Delete</button>' .
                         '</form>';
@@ -105,51 +112,66 @@ class UserController extends Controller
         $validated = $request->validate([
             'name' => 'required|max:255',
             'email' => 'required|email|unique:customers,email',
-            'password' => 'required|min:8',
+            'password' => 'required|min:6|confirmed',
+            'status' => 'required|in:active,inactive',
         ]);
 
-        Customer::create([
-            'name' => $validated['name'],
-            'email' => $validated['email'],
-            'password' => bcrypt($validated['password']),
-        ]);
+        $validated['password'] = bcrypt($validated['password']);
+
+        Customer::create($validated);
 
         return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
 
-    public function show(Customer $customer)
+    public function show($id)
     {
+        $customer = Customer::find($id);
+    
+        if (!$customer) {
+            abort(404, 'Customer not found');
+        }
+    
         return view('admin.users.show', compact('customer'));
     }
-
-    public function edit(Customer $customer)
+    
+    public function edit($id)
     {
+        $customer = Customer::find($id);
+        if (!$customer) {
+            abort(404, 'Customer not found');
+        }
         return view('admin.users.edit', compact('customer'));
     }
-
+    
     public function update(Request $request, Customer $customer)
     {
         $validated = $request->validate([
             'name' => 'required|max:255',
             'email' => 'required|email|unique:customers,email,' . $customer->id,
-            'password' => 'nullable|min:8',
+            'status' => 'required|in:active,inactive',
+            'password' => 'nullable|min:6|confirmed',
         ]);
-
-        if ($validated['password']) {
+    
+        if (!empty($validated['password'])) {
             $validated['password'] = bcrypt($validated['password']);
         } else {
             unset($validated['password']);
         }
-
+    
+        // Debugging
+        \Log::info('Updating customer:', $validated);
+    
         $customer->update($validated);
-
+    
         return redirect()->route('users.index')->with('success', 'User updated successfully.');
     }
-
+    
     public function destroy(Customer $customer)
     {
+        \Log::info('Deleting customer:', ['customer_id' => $customer->id]);
+    
         $customer->delete();
-
+    
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
     }
 }
