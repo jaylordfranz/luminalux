@@ -119,7 +119,7 @@
             <i class="fas fa-percentage"></i>
             <span class="menu-text">Discount Management</span>
         </a>
-        <a href="{{ route('admin.orders') }}">
+        <a href="{{ route('admin.orders.index') }}">
             <i class="fas fa-shopping-cart"></i>
             <span class="menu-text">Order Management</span>
         </a>

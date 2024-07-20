@@ -129,7 +129,10 @@
         <p>Your cart is empty.</p>
         @endforelse
 
-        <button class="btn btn-primary btn-checkout"><i class="fas fa-shopping-cart"></i> Checkout</button>
+        <form action="{{ route('customer.checkout') }}" method="GET" style="display:inline;">
+    @csrf
+    <button type="submit" class="btn btn-primary btn-checkout"><i class="fas fa-shopping-cart"></i> Checkout</button>
+</form>
     </div>
 
     <!-- Bootstrap and jQuery JS -->

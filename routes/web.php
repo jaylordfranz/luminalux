@@ -16,6 +16,8 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CustomerProfileController;
 use App\Http\Controllers\BillingAddressController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\AdminOrderController;
+use App\Http\Controllers\OrderController;
 
 
 /*
@@ -205,3 +207,22 @@ Route::post('/cart/update/{id}', [CartController::class, 'updateCart'])->name('c
 
 // Checkout
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('customer.checkout');
+
+Route::middleware(['auth:customer'])->group(function () {
+    Route::get('/checkout', [CheckoutController::class, 'index'])->name('customer.checkout');
+    Route::post('/checkout', [CheckoutController::class, 'processCheckout'])->name('customer.process-checkout');
+});
+
+// Route for viewing all orders
+Route::get('/admin/orders', [AdminOrderController::class, 'index'])->name('admin.orders.index');
+
+// Route for viewing a single order
+Route::get('/admin/orders/{id}', [AdminOrderController::class, 'show'])->name('admin.orders.show');
+
+// Route for editing a single order
+Route::get('/admin/orders/{id}/edit', [AdminOrderController::class, 'edit'])->name('admin.orders.edit');
+
+// Route for updating a single order
+Route::put('/admin/orders/{id}', [AdminOrderController::class, 'update'])->name('admin.orders.update');
+
+Route::get('/order-history', [OrderController::class, 'index'])->middleware('auth')->name('order.history');

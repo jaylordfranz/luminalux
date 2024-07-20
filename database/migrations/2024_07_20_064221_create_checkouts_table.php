@@ -15,16 +15,13 @@ class CreateCheckoutsTable extends Migration
     {
         Schema::create('checkouts', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('cart_id');
-            $table->timestamp('checkout_date')->nullable();
+            $table->foreignId('customer_id')->constrained()->onDelete('cascade');
+            $table->foreignId('billing_address')->constrained()->onDelete('cascade');
+            $table->dateTime('checkout_date');
             $table->decimal('total_amount', 10, 2);
-            $table->string('checkout_status')->default('pending');
-            $table->string('payment_status')->default('unpaid');
-            $table->text('billing_address');
+            $table->string('checkout_status')->default('Pending');
+            $table->string('payment_status')->default('Pending');
             $table->timestamps();
-
-            // Foreign key constraint
-            $table->foreign('cart_id')->references('id')->on('carts')->onDelete('cascade');
         });
     }
 

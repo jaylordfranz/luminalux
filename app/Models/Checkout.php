@@ -28,13 +28,22 @@ class Checkout extends Model
         'checkout_status',
         'payment_status',
         'billing_address',
+        'customer_id',
     ];
 
     /**
      * Get the cart associated with the checkout.
      */
     public function cart()
+{
+    return $this->belongsTo(Cart::class); // Adjust this if necessary
+}
+
+    /**
+     * Get the customer associated with the checkout.
+     */
+    public function customer()
     {
-        return $this->belongsTo(Cart::class);
+        return $this->belongsTo(Customer::class);
     }
 }

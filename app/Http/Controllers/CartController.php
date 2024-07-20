@@ -83,4 +83,15 @@ public function showUpdateForm($id)
 
         return redirect()->route('customer.cart')->with('success', 'Cart item updated successfully.');
     }
+
+    public function getTotalAmount()
+{
+    $customerId = Auth::guard('customer')->id();
+    $cartItems = Cart::where('customer_id', $customerId)->with('product')->get();
+    $totalAmount = $cartItems->sum(function($cartItem) {
+        return $cartItem->product->price * $cartItem->quantity;
+    });
+
+    return $totalAmount;
+}
 }

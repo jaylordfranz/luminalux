@@ -3,163 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout</title>
+    <title>Checkout Summary</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    @stack('styles')
     <style>
         .checkout-container {
-            max-width: 900px;
-            margin: 50px auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            background-color: #f9f9f9;
+            margin-top: 50px;
         }
-        .order-summary {
+        .order-summary, .billing-address, .cart-items {
             margin-bottom: 30px;
-            border-bottom: 1px solid #ddd;
-            padding-bottom: 15px;
-        }
-        .order-summary h4 {
-            margin-bottom: 15px;
-            font-size: 1.5em;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background-color: #f9f9f9;
         }
         .summary-row {
             display: flex;
             justify-content: space-between;
             padding: 10px 0;
+            border-bottom: 1px solid #ddd;
         }
         .summary-label {
             font-weight: bold;
         }
-        .summary-value {
-            font-size: 1.1em;
-        }
-        .cart-items {
-            margin-bottom: 30px;
-        }
-        .cart-items h4 {
-            margin-bottom: 15px;
-            font-size: 1.5em;
-        }
         .item-row {
             display: flex;
-            border-bottom: 1px solid #ddd;
-            padding: 10px 0;
             align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
         }
         .item-image {
-            width: 100px;
-            height: 100px;
-            background-color: #ddd;
+            width: 80px;
+            height: 80px;
             background-size: cover;
             background-position: center;
-            border-radius: 8px;
+            margin-right: 20px;
+            border-radius: 5px;
         }
         .item-details {
-            margin-left: 15px;
-        }
-        .item-name {
-            font-size: 1.2em;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        .item-price {
-            color: #555;
-        }
-        .item-quantity {
-            color: #777;
+            flex-grow: 1;
         }
         .button-section {
-            text-align: center;
+            display: flex;
+            justify-content: space-between;
         }
-        .button-section .btn {
-            margin: 5px;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none;
-            color: #fff;
-            font-weight: bold;
-        }
-        .btn-primary {
-            background-color: #007bff;
-            border: none;
-        }
-        .btn-secondary {
-            background-color: #6c757d;
-            border: none;
-        }
-        .btn-primary:hover {
-            background-color: #0056b3;
-        }
-        .btn-secondary:hover {
-            background-color: #5a6268;
+        .btn {
+            margin-top: 10px;
         }
     </style>
 </head>
 <body>
-<div class="container checkout-container">
-    <h2>Checkout Summary</h2>
+    <div class="container checkout-container">
+        <h2>Checkout Summary</h2>
 
-    <!-- Order Summary Section -->
-    <div class="order-summary">
-        <h4>Order Details</h4>
-        <div class="summary-row">
-            <span class="summary-label">Checkout Date:</span>
-            <span class="summary-value">{{ \Carbon\Carbon::now()->format('F j, Y') }}</span>
-        </div>
-        <div class="summary-row">
-            <span class="summary-label">Billing Address:</span>
-            <span class="summary-value">123 Main St, Anytown, USA</span>
-        </div>
-        <div class="summary-row">
-            <span class="summary-label">Total Amount:</span>
-            <span class="summary-value">$100.00</span>
-        </div>
-        <div class="summary-row">
-            <span class="summary-label">Checkout Status:</span>
-            <span class="summary-value">Processing</span>
-        </div>
-        <div class="summary-row">
-            <span class="summary-label">Payment Status:</span>
-            <span class="summary-value">Pending</span>
-        </div>
-    </div>
-
-    <!-- Cart Items Section -->
-    <div class="cart-items">
-        <h4>Items in Your Cart</h4>
-
-        <!-- Default cart items -->
-        <div class="item-row">
-            <div class="item-image" style="background-image: url('https://via.placeholder.com/100');"></div>
-            <div class="item-details">
-                <div class="item-name">Product 1</div>
-                <div class="item-price">$30.00</div>
-                <div class="item-quantity">Quantity: 2</div>
+        <!-- Order Summary Section -->
+        <div class="order-summary">
+            <h4>Order Details</h4>
+            <div class="summary-row">
+                <span class="summary-label">Checkout Date:</span>
+                <span class="summary-value">{{ \Carbon\Carbon::now()->format('F j, Y') }}</span>
+            </div>
+            <div class="summary-row">
+                <span class="summary-label">Total Amount:</span>
+                <span class="summary-value">${{ number_format($totalAmount, 2) }}</span>
             </div>
         </div>
-        <div class="item-row">
-            <div class="item-image" style="background-image: url('https://via.placeholder.com/100');"></div>
-            <div class="item-details">
-                <div class="item-name">Product 2</div>
-                <div class="item-price">$20.00</div>
-                <div class="item-quantity">Quantity: 1</div>
-            </div>
-        </div>
-        <div class="item-row">
-            <div class="item-image" style="background-image: url('https://via.placeholder.com/100');"></div>
-            <div class="item-details">
-                <div class="item-name">Product 3</div>
-                <div class="item-price">$50.00</div>
-                <div class="item-quantity">Quantity: 1</div>
-            </div>
-        </div>
-    </div>
 
-    <!-- Button Section -->
-    <div class="button-section">
-        <a href="{{ route('customer.orders') }}" class="btn btn-primary">View Order History</a>
-        <a href="{{ route('customer.cart') }}" class="btn btn-secondary">Return to Cart</a>
+        <!-- Billing Address Section -->
+        <div class="billing-address">
+            <h4>Billing Address</h4>
+            <form action="{{ route('customer.process-checkout') }}" method="POST">
+                @csrf
+                <div class="form-group">
+                    <label for="billing_address">Select Billing Address:</label>
+                    <select name="billing_address" id="billing_address" class="form-control">
+                        @foreach($billingAddresses as $address)
+                            <option value="{{ $address->id }}">{{ $address->address_name }} - {{ $address->address }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- Cart Items Section -->
+                <div class="cart-items">
+                    <h4>Cart Items</h4>
+                    @foreach($cartItems as $cartItem)
+                        <div class="item-row">
+                            <div class="item-image" style="background-image: url('{{ $cartItem->product->image_url }}');"></div>
+                            <div class="item-details">
+                                <div class="item-name">{{ $cartItem->product->name }}</div>
+                                <div class="item-price">${{ number_format($cartItem->product->price, 2) }}</div>
+                                <div class="item-quantity">Quantity: {{ $cartItem->quantity }}</div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+
+                <!-- Checkout Buttons -->
+                <div class="button-section">
+                    <button type="submit" class="btn btn-primary">Confirm Checkout</button>
+                    <a href="{{ route('customer.cart') }}" class="btn btn-secondary">Back to Cart</a>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="{{ asset('js/app.js') }}"></script>
 </body>
 </html>
