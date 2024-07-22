@@ -1,5 +1,6 @@
 @extends('layouts.admin')
 
+
 @section('content')
 @include('partials.header')
 <div class="container">
@@ -23,5 +24,8 @@
     </div>
 </div>
 
+
 @include('partials.footer')
 @endsection
+
+

@@ -1,6 +1,8 @@
 <!-- resources/views/admin/products/show.blade.php -->
 
+
 @extends('layouts.app')
+
 
 @section('content')
 <div class="container">
@@ -8,6 +10,7 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">Product Details</div>
+
 
                 <div class="card-body">
                     <table class="table table-bordered">
@@ -35,6 +38,7 @@
                         </tbody>
                     </table>
 
+
                     <a href="{{ route('products.index') }}" class="btn btn-secondary mt-3">Back</a>
                 </div>
             </div>
@@ -42,5 +46,8 @@
     </div>
 </div>
 
+
 @include('partials.footer')
 @endsection
+
+

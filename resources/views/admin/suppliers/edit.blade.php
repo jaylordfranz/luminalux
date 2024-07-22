@@ -1,5 +1,6 @@
 @extends('layouts.admin')
 
+
 @section('content')
 @include('partials.header')
 <div class="container">
@@ -8,25 +9,30 @@
         @csrf
         @method('PUT')
 
+
         <div class="form-group">
             <label for="name">Name:</label>
             <input type="text" class="form-control" id="name" name="name" value="{{ old('name', $supplier->name) }}" required>
         </div>
+
 
         <div class="form-group">
             <label for="contact_info">Contact Info:</label>
             <input type="text" class="form-control" id="contact_info" name="contact_info" value="{{ old('contact_info', $supplier->contact_info) }}" required>
         </div>
 
+
         <div class="form-group">
             <label for="address">Address:</label>
             <input type="text" class="form-control" id="address" name="address" value="{{ old('address', $supplier->address) }}" required>
         </div>
 
+
         <div class="form-group">
             <label for="images">Images:</label>
             <input type="file" class="form-control" id="images" name="images[]" multiple>
         </div>
+
 
         <div class="form-group">
             <label for="current_images">Current Images:</label>
@@ -37,9 +43,11 @@
             @endforeach
         </div>
 
+
         <button type="submit" class="btn btn-primary">Update Supplier</button>
     </form>
 </div>
+
 
 @include('partials.footer')
 @endsection

@@ -81,12 +81,13 @@
         </a>
 
         <!-- Search form -->
-        <form id="searchForm" class="form-inline search-form">
+        <form class="form-inline search-form" id="searchForm">
             <input id="searchInput" class="form-control mr-sm-2 search-input" type="search" placeholder="Search" aria-label="Search">
             <button class="btn btn-outline-primary my-2 my-sm-0 search-icon" type="submit">
                 <i class="fas fa-search"></i>
             </button>
         </form>
+
 
         <div class="d-flex align-items-center">
             <div class="dropdown mr-3">
@@ -103,7 +104,7 @@
             <a class="nav-link" href="#"><i class="fas fa-heart"></i></a>
             <a class="nav-link" href="{{ route('customer.profile') }}"><i class="fas fa-user"></i> Customer Profile</a>
             <a class="nav-link" href="{{ route('customer.cart') }}"><i class="fas fa-shopping-cart"></i> Shopping Cart</a>
-            <a class="nav-link" href="{{ route('customer.orders') }}"><i class="fas fa-history"></i> Order History</a>
+            <a class="nav-link" href="{{ route('customer.orders.index') }}"><i class="fas fa-history"></i> Order History</a> <!-- Corrected Route Name -->
             <a class="nav-link" href="{{ route('customer.reviews') }}"><i class="fas fa-star"></i> Product Reviews</a>
             <a class="nav-link" href="{{ route('customer.checkout') }}"><i class="fas fa-credit-card"></i> Checkout</a> <!-- Added Checkout Link -->
         </div>
@@ -229,25 +230,27 @@ $(document).ready(function() {
     });
 
     $('#searchForm').submit(function(event) {
-        event.preventDefault();
+        event.preventDefault(); // Prevent default form submission
 
         var query = $('#searchInput').val();
 
+        // Perform search via AJAX
         $.ajax({
-            url: '{{ route('api.customer.search') }}',
-            method: 'GET',
+            url: '{{ route('search') }}',
+            dataType: 'json',
             data: {
                 query: query
             },
-            success: function(response) {
+            success: function(data) {
+                // Clear existing products
                 $('#products-container').empty();
 
-                var products = response.data;
-
-                if (products.length === 0) {
+                // Check if search result is empty
+                if (data.length === 0) {
                     $('#products-container').append('<p>No products found.</p>');
                 } else {
-                    products.forEach(function(product) {
+                    // Append new products based on search results
+                    data.forEach(function(product) {
                         appendProductCard(product);
                     });
                 }
@@ -255,6 +258,7 @@ $(document).ready(function() {
             error: function(xhr, status, error) {
                 console.error('Error performing search:', error);
             }
+
         });
     });
 });

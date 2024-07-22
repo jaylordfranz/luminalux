@@ -1,7 +1,9 @@
 @extends('layouts.admin')
 
+
 @section('content')
     @include('partials.header')
+
 
     <div class="main-content">
         <h2>Edit Product</h2>
@@ -33,14 +35,18 @@
                 </select>
             </div>
 
+
             <!-- Add fields for image upload if necessary -->
+
 
             <button type="submit" class="btn btn-primary">Update Product</button>
         </form>
     </div>
 
+
     @include('partials.footer')
 @endsection
+
 
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>

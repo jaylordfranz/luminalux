@@ -1,10 +1,13 @@
 @extends('layouts.admin')
 
+
 @section('content')
     @include('partials.header')
 
+
     <div class="main-content">
         <h2>Add Product</h2>
+
 
         {{-- Display validation errors summary --}}
         @if ($errors->any())
@@ -16,6 +19,7 @@
                 </ul>
             </div>
         @endif
+
 
         <form id="addProductForm" action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
@@ -48,12 +52,15 @@
                 <input type="file" class="form-control" id="images" name="images[]" multiple>
             </div>
 
+
             <button type="submit" class="btn btn-primary">Add Product</button>
         </form>
     </div>
 
+
     @include('partials.footer')
 @endsection
+
 
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
@@ -111,3 +118,5 @@
     });
 </script>
 @endsection
+
+

@@ -1,7 +1,9 @@
 @extends('layouts.admin')
 
+
 @section('content')
     @include('partials.header')
+
 
     <div class="main-content">
         <h2>Edit Discount Code</h2>
@@ -29,11 +31,16 @@
                 <input type="date" class="form-control" id="valid_to" name="valid_to" value="{{ $discount->valid_to }}" required>
             </div>
 
+
             <!-- Add fields for any additional details -->
+
 
             <button type="submit" class="btn btn-primary">Update Discount</button>
         </form>
     </div>
 
+
     @include('partials.footer')
 @endsection
+
+

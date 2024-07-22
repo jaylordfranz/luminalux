@@ -1,10 +1,13 @@
 @extends('layouts.admin')
 
+
 @section('content')
     @include('partials.header')
 
+
     <div class="main-content">
         <h2>Discount Details</h2>
+
 
         <div class="table-responsive">
             <table class="table table-bordered">
@@ -33,8 +36,13 @@
             </table>
         </div>
 
+
         <a href="{{ route('discounts.index') }}" class="btn btn-secondary">Back</a>
     </div>
 
+
     @include('partials.footer')
 @endsection
+
+
+

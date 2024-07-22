@@ -1,10 +1,15 @@
 <?php
 
+
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Storage;
 
+
 use App\Models\Supplier;
 use Illuminate\Http\Request;
+
+
+
 
 
 
@@ -16,17 +21,20 @@ class SupplierController extends Controller
     //     return view('suppliers.index', compact('suppliers'));
     // }
 
+
     public function index()
     {
         $suppliers = Supplier::paginate(20); // Paginate with 10 items per page, adjust as needed
         return view('admin.suppliers.index', compact('suppliers'));
     }
 
+
     public function create()
     {
         return view('admin.suppliers.create');
     }
-    
+   
+
 
     public function store(Request $request)
     {
@@ -37,6 +45,7 @@ class SupplierController extends Controller
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
 
+
         $images = [];
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
@@ -45,6 +54,7 @@ class SupplierController extends Controller
             }
         }
 
+
         Supplier::create([
             'name' => $request->name,
             'contact_info' => $request->contact_info,
@@ -52,18 +62,22 @@ class SupplierController extends Controller
             'images' => $images
         ]);
 
+
         return redirect()->route('suppliers.index')->with('success', 'Supplier created successfully.');
     }
+
 
     public function show(Supplier $supplier)
     {
         return view('admin.suppliers.show', compact('supplier'));
     }
 
+
     public function edit(Supplier $supplier)
     {
         return view('admin.suppliers.edit', compact('supplier'));
     }
+
 
     public function update(Request $request, Supplier $supplier)
     {
@@ -73,9 +87,9 @@ class SupplierController extends Controller
             'address' => 'required',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048'
         ]);
-    
+   
         $images = [];
-    
+   
         // Handle new images
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $image) {
@@ -83,7 +97,7 @@ class SupplierController extends Controller
                 $images[] = $path;
             }
         }
-    
+   
         // Handle deletion of old images
         if ($request->has('delete_images')) {
             foreach ($request->delete_images as $imageToDelete) {
@@ -93,7 +107,7 @@ class SupplierController extends Controller
                 }
             }
         }
-    
+   
         // Update supplier details
         $supplier->update([
             'name' => $request->name,
@@ -101,10 +115,11 @@ class SupplierController extends Controller
             'address' => $request->address,
             'images' => $images
         ]);
-    
+   
         return redirect()->route('suppliers.index')->with('success', 'Supplier updated successfully.');
     }
-    
+   
+
 
     public function destroy(Supplier $supplier)
     {

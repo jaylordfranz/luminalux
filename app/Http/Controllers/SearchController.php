@@ -9,24 +9,18 @@ use Spatie\Searchable\Search;
 class SearchController extends Controller
 {
     public function search(Request $request)
-    {
-        $query = $request->input('query');
+    {   
+        {
+            $query = $request->input('query');
+        
+            // Example logic: Fetch products based on the query
+            $products = Product::where('name', 'like', '%'.$query.'%')->get();
+        
+            return response()->json($products);
+        }
+        
 
-        // Perform search query using Spatie
-        $searchResults = (new Search())
-            ->registerModel(Product::class, 'name')
-            ->search($query);
-
-        // Format results for your frontend
-        $products = $searchResults->map(function ($result) {
-            return [
-                'id' => $result->searchable->id,
-                'name' => $result->searchable->name,
-                'price' => $result->searchable->price,
-                'image_url' => $result->searchable->image_url,
-            ];
-        });
-
-        return response()->json($products);
+ 
     }
 }
+

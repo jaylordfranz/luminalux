@@ -18,6 +18,8 @@ use App\Http\Controllers\BillingAddressController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\InventoryChartController;
 
 
 /*
@@ -80,12 +82,19 @@ Route::put('/admin/products/{product}', [ProductController::class, 'update'])->n
 Route::delete('/admin/products/{product}', [ProductController::class, 'destroy'])->name('admin.products.destroy');
 
 Route::resource('suppliers', SupplierController::class);
+Route::get('/admin/suppliers/create', [SupplierController::class, 'create'])->name('suppliers.create');
+Route::get('/admin/suppliers', [SupplierController::class, 'index'])->name('admin.suppliers.index');
+
+
 
 Route::resource('discounts', DiscountController::class);
 
 Route::prefix('admin')->group(function () {
     Route::resource('inventory', InventoryController::class);
 });
+
+Route::resource('inventory', InventoryController::class);
+
 
 Route::get('/inventory', [InventoryController::class, 'index'])->name('inventory.index');
 
@@ -94,11 +103,9 @@ Route::get('/admin/inventory/{id}', [InventoryController::class, 'show'])->name(
 Route::get('/admin/inventory', [InventoryController::class, 'index'])->name('admin.inventory.index');
 
 
-Route::get('/admin/suppliers/create', [SupplierController::class, 'create'])->name('suppliers.create');
-Route::get('/admin/suppliers', [SupplierController::class, 'index'])->name('admin.suppliers.index');
-
 // Charts
 Route::get('/admin/dashboard/category-product-chart', [CategoryController::class, 'productCounts']);
+Route::get('/inventory-data', [InventoryChartController::class, 'getData']);
 
 // Customer
 Route::get('/register', function () {
@@ -129,15 +136,12 @@ Route::get('/customer/cart', function () {
 })->name('customer.cart');
 
 Route::get('/customer/orders', function () {
-    return view('customer.orders');
+    return view('customer.orders.index');
 })->name('customer.orders');
 
 Route::get('/customer/reviews', function () {
     return view('customer.reviews');
 })->name('customer.reviews');
-
-
-
 
 Route::get('/skincare', [CustomerController::class, 'skincare'])->name('customer.skincare');
 Route::get('/makeup', [CustomerController::class, 'makeup'])->name('customer.makeup');
@@ -150,28 +154,13 @@ Route::get('/customer/profile', [CustomerProfileController::class, 'index'])->na
 Route::middleware('auth:customer')->group(function () {
     Route::post('/billing-addresses/store', [BillingAddressController::class, 'store'])->name('billing-addresses.store');
     Route::delete('/billing-addresses/{id}', [BillingAddressController::class, 'destroy'])->name('billing-addresses.destroy');
-});
-
-Route::middleware('auth:customer')->group(function () {
-    Route::get('/customer/profile', [CustomerProfileController::class, 'edit'])->name('customer.profile');
     Route::put('/customer/profile/update', [CustomerProfileController::class, 'update'])->name('customer.profile.update');
-});
-
-Route::middleware(['auth:customer'])->group(function () {
-    // Routes for edit profile and billing addresses
-    // Route::get('/customer/profile', [CustomerProfileController::class, 'index'])->name('customer.profile');
-    Route::put('/customer/profile/update', [CustomerProfileController::class, 'update'])->name('customer.profile.update');
-    //Route::post('/customer/profile/store', [BillingAddressController::class, 'store'])->name('customer.profile.store');
-    // Route::delete('/billing-addresses/{id}', [BillingAddressController::class, 'destroy'])->name('billing-addresses.destroy');
-    // Route for storing billing addresses
 });
 
 Route::post('/customer/address', [BillingAddressController::class, 'store'])->name('customer.address.store');
 
 // View product details
-// routes/web.php
 Route::get('/customer/product-details/{id}', [CustomerProductController::class, 'show'])->name('customer.product-details');
-// routes/web.php
 Route::get('customer/product-details/{product}', [ProductController::class, 'show'])->name('customer.product-details');
 Route::get('/customer/dashboard', [CustomerProductController::class, 'dashboard'])->name('customer.dashboard');
 Route::prefix('customer')->group(function () {
@@ -209,7 +198,6 @@ Route::post('/cart/update/{id}', [CartController::class, 'updateCart'])->name('c
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('customer.checkout');
 
 Route::middleware(['auth:customer'])->group(function () {
-    Route::get('/checkout', [CheckoutController::class, 'index'])->name('customer.checkout');
     Route::post('/checkout', [CheckoutController::class, 'processCheckout'])->name('customer.process-checkout');
 });
 
@@ -225,17 +213,15 @@ Route::get('/admin/orders/{id}/edit', [AdminOrderController::class, 'edit'])->na
 // Route for updating a single order
 Route::put('/admin/orders/{id}', [AdminOrderController::class, 'update'])->name('admin.orders.update');
 
+// Route for viewing order history
 Route::get('/order-history', [OrderController::class, 'index'])->middleware('auth')->name('order.history');
 
-// Resource route for Users
-Route::resource('users', UserController::class);
+// Additional routes for user registration and profile management
+Route::get('/register', [AuthController::class, 'showRegistrationForm'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login']); 
+Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+////customer order history
+Route::get('/customer/orders', [OrderController::class, 'index'])->name('customer.orders.index');
 
-// Additional routes for user management
-Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users.index');
-Route::get('/admin/users/create', [UserController::class, 'create'])->name('admin.users.create');
-Route::post('/admin/users', [UserController::class, 'store'])->name('admin.users.store');
-Route::get('/admin/users/{customer}', [UserController::class, 'show'])->name('admin.users.show');
-Route::get('/admin/users/{customer}/edit', [UserController::class, 'edit'])->name('admin.users.edit');
-Route::put('/admin/users/{customer}', [UserController::class, 'update'])->name('users.update');
-Route::delete('/admin/users/{customer}', [UserController::class, 'destroy'])->name('admin.users.destroy');
-Route::get('/admin/users', [UserController::class, 'index'])->name('admin.users'); // Updated route

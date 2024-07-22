@@ -77,7 +77,7 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <form action="{{ route('suppliers.store') }}" method="POST" enctype="multipart/form-data">
+            <form id="addSupplierForm" action="{{ route('suppliers.store') }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 <div class="modal-body">
                     <div class="form-group">
@@ -90,7 +90,7 @@
                     </div>
                     <div class="form-group">
                         <label for="supplierAddress">Address</label>
-                        <textarea class="form-control" id="supplierAddress" name="address"></textarea>
+                        <textarea class="form-control" id="supplierAddress" name="address" required></textarea>
                     </div>
                     <div class="form-group">
                         <label for="supplierImages">Images</label>
@@ -128,14 +128,14 @@
 <script>
     $(document).ready(function() {
         var table = $('#suppliersTable').DataTable({
-            "paging": true,
-            "ordering": true,
-            "info": true,
-            "searching": true,
-            "order": [],
-            "language": {
-                "search": "",
-                "searchPlaceholder": "Search..."
+            paging: true,
+            ordering: true,
+            info: true,
+            searching: true,
+            order: [],
+            language: {
+                search: "",
+                searchPlaceholder: "Search..."
             },
             dom: 'Bfrtip',
             buttons: [
@@ -151,24 +151,55 @@
         });
 
 
-        $('#searchButton').on('click', function() {
-            var value = $('#searchInput').val().trim();
-            if (value) {
-                table.columns().every(function(index) {
-                    if (index === 0) { // Search in the first column (ID)
-                        this.search('^' + value + '$', true, false).draw();
-                    }
-                });
-            } else {
-                table.columns().every(function() {
-                    this.search('').draw();
-                });
+        // Form validation
+        $('#addSupplierForm').submit(function(e) {
+            e.preventDefault();
+
+
+            // Clear previous errors
+            $('.form-control').removeClass('is-invalid');
+            $('.invalid-feedback').remove();
+
+
+            var isValid = true;
+
+
+            // Validate name
+            var name = $('#supplierName').val().trim();
+            if (name === '') {
+                $('#supplierName').addClass('is-invalid').after('<div class="invalid-feedback">Please input a name.</div>');
+                isValid = false;
+            } else if (name.length < 3) {
+                $('#supplierName').addClass('is-invalid').after('<div class="invalid-feedback">Name must be at least 3 characters long.</div>');
+                isValid = false;
+            }
+
+
+            // Validate contact info
+            var contactInfo = $('#supplierContact').val().trim();
+            if (contactInfo === '' || contactInfo.length !== 11) {
+                $('#supplierContact').addClass('is-invalid').after('<div class="invalid-feedback">Contact Info must be exactly 11 digits.</div>');
+                isValid = false;
+            }
+
+
+            // Validate address
+            var address = $('#supplierAddress').val().trim();
+            if (address === '') {
+                $('#supplierAddress').addClass('is-invalid').after('<div class="invalid-feedback">Please input an address.</div>');
+                isValid = false;
+            } else if (address.length < 3) {
+                $('#supplierAddress').addClass('is-invalid').after('<div class="invalid-feedback">Address must be at least 3 characters long.</div>');
+                isValid = false;
+            }
+
+
+            if (isValid) {
+                this.submit(); // Submit the form if all fields are valid
             }
         });
     });
 </script>
-
-
 @endsection
 
 

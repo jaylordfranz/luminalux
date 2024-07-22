@@ -1,7 +1,11 @@
 @extends('layouts.app')
 
 
+
+
 @section('content')
+
+
 
 
 <div class="container profile-container">
@@ -12,10 +16,14 @@
     </div>
 
 
+
+
     <div class="row">
         <div class="col-md-6 offset-md-3">
             <div class="card">
                 <div class="card-header">Edit Profile</div>
+
+
 
 
                 <div class="card-body">
@@ -24,9 +32,13 @@
                         @method('PUT')
 
 
+
+
                         <div class="form-group">
                             <label for="name">Name</label>
                             <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ $user->name }}" required autocomplete="name" autofocus>
+
+
 
 
                             @error('name')
@@ -37,9 +49,13 @@
                         </div>
 
 
+
+
                         <div class="form-group">
                             <label for="email">Email</label>
                             <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ $user->email }}" required autocomplete="email">
+
+
 
 
                             @error('email')
@@ -50,11 +66,15 @@
                         </div>
 
 
+
+
                         <!-- Add New Billing Address Modal Button -->
                         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addBillingAddressModal">
                             Add New Billing Address
                         </button>
                         <!-- End Add New Billing Address Modal Button -->
+
+
 
 
                    <!-- Default Billing Address Dropdown -->
@@ -70,6 +90,10 @@
     </select>
 </div>
 <!-- End Default Billing Address Dropdown -->
+
+
+
+
 
 
 
@@ -92,17 +116,30 @@
 
 
 
+
+
+
+
+
+
                         <div class="form-group mt-3 mb-0">
                             <button type="submit" class="btn btn-primary">
                                 Save Changes
                             </button>
                         </div>
                     </form>
+                      <!-- Logout Form -->
+                      <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="btn btn-danger mt-3">Logout</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
 
 
 <!-- Add Billing Address Modal -->
@@ -124,10 +161,14 @@
                     </div>
 
 
+
+
                     <div class="form-group">
                         <label for="address">Address</label>
                         <input type="text" class="form-control" id="address" name="address" required>
                     </div>
+
+
 
 
                     <div class="form-group">
@@ -144,6 +185,8 @@
     </div>
 </div>
 <!-- End Add Billing Address Modal -->
+
+
 
 
 @endsection

@@ -1,11 +1,14 @@
 @extends('layouts.admin')
 
+
 @section('content')
     @include('partials.header')
+
 
     <div class="main-content">
         <h2>Manage Discounts</h2>
         <p>Here you can view, edit, and delete discounts.</p>
+
 
         <!-- Add Discount Button -->
         <div class="mb-3">
@@ -13,6 +16,7 @@
                 Add Discount
             </button>
         </div>
+
 
         <!-- DataTable with Search Bar and Pagination -->
         <table id="discountsTable" class="table table-striped table-bordered" style="width:100%">
@@ -50,13 +54,16 @@
             </tbody>
         </table>
 
+
         <!-- Pagination -->
         <div class="mt-3">
             {{ $discounts->links() }}
         </div>
     </div>
 
+
     @include('partials.footer')
+
 
     <!-- Add Discount Modal -->
     <div class="modal fade" id="addDiscountModal" tabindex="-1" role="dialog" aria-labelledby="addDiscountModalLabel" aria-hidden="true">
@@ -101,11 +108,13 @@
         </div>
     </div>
 
+
     <!-- DataTables CSS and JS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.dataTables.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.7.1/css/buttons.bootstrap4.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/dataTables.bootstrap4.min.css">
+
 
     <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
     <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
@@ -117,34 +126,98 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
 
-    <script>
-        $(document).ready(function() {
-            var table = $('#discountsTable').DataTable({
-                "paging": true,
-                "ordering": true,
-                "info": true,
-                "searching": true,
-                "order": [],
-                "language": {
-                    "search": "",
-                    "searchPlaceholder": "Search..."
-                },
-                dom: 'Bfrtip',
-                buttons: [
-                    {
-                        extend: 'excelHtml5',
-                        title: 'Discounts'
-                    },
-                    {
-                        extend: 'pdfHtml5',
-                        title: 'Discounts'
-                    }
-                ]
-            });
 
-            $('#searchInput').on('keyup', function() {
-                table.search($(this).val()).draw();
-            });
-        });
-    </script>
+    <script>
+$(document).ready(function() {
+    var table = $('#discountsTable').DataTable({
+        "paging": true,
+        "ordering": true,
+        "info": true,
+        "searching": true,
+        "order": [],
+        "language": {
+            "search": "",
+            "searchPlaceholder": "Search..."
+        },
+        dom: 'Bfrtip',
+        buttons: [
+            {
+                extend: 'excelHtml5',
+                title: 'Discounts'
+            },
+            {
+                extend: 'pdfHtml5',
+                title: 'Discounts'
+            }
+        ]
+    });
+
+
+    // Form submission and validation
+    $('#addDiscountModal form').submit(function(e) {
+        e.preventDefault();
+       
+        // Clear previous errors
+        $('.form-control').removeClass('is-invalid');
+        $('.invalid-feedback').remove();
+
+
+        var isValid = true;
+
+
+        // Validate code
+        var code = $('#code').val().trim();
+        var codePattern = /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]+$/;
+        if (code === '') {
+            $('#code').addClass('is-invalid').after('<div class="invalid-feedback">Please input a code.</div>');
+            isValid = false;
+        } else if (!codePattern.test(code)) {
+            $('#code').addClass('is-invalid').after('<div class="invalid-feedback">Code must be a mix of letters and numbers.</div>');
+            isValid = false;
+        }
+
+
+        // Validate description
+        var description = $('#description').val().trim();
+        if (description === '') {
+            $('#description').addClass('is-invalid').after('<div class="invalid-feedback">Please input a description.</div>');
+            isValid = false;
+        } else if (description.length < 3) {
+            $('#description').addClass('is-invalid').after('<div class="invalid-feedback">Description must be at least 3 characters long.</div>');
+            isValid = false;
+        }
+
+
+        // Validate discount percentage
+        var discountPercentage = $('#discount_percentage').val().trim();
+        if (discountPercentage === '') {
+            $('#discount_percentage').addClass('is-invalid').after('<div class="invalid-feedback">Please input a discount percentage.</div>');
+            isValid = false;
+        }
+
+
+        // Validate valid from date
+        var validFrom = $('#valid_from').val().trim();
+        if (validFrom === '') {
+            $('#valid_from').addClass('is-invalid').after('<div class="invalid-feedback">Please input a valid from date.</div>');
+            isValid = false;
+        }
+
+
+        // Validate valid to date
+        var validTo = $('#valid_to').val().trim();
+        if (validTo === '') {
+            $('#valid_to').addClass('is-invalid').after('<div class="invalid-feedback">Please input a valid to date.</div>');
+            isValid = false;
+        }
+
+
+        if (isValid) {
+            this.submit();
+        }
+    });
+});
+</script>
+
+
 @endsection

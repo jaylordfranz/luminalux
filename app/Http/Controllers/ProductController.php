@@ -1,6 +1,8 @@
 <?php
 
+
 namespace App\Http\Controllers;
+
 
 use App\Models\Product;
 use App\Models\Category;
@@ -8,21 +10,16 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Yajra\DataTables\Facades\DataTables;
 
+
 class ProductController extends Controller
 {
-    public function search(Request $request)
-    {
-        $query = $request->input('query');
-        $products = Product::where('name', 'like', "%$query%")->get();
-
-        return response()->json(['data' => $products]);
-    }
     // Backend API endpoints
     public function apiIndex(): JsonResponse
     {
         $products = Product::with('category')->paginate(10);
         return response()->json($products);
     }
+
 
     public function apiStore(Request $request): JsonResponse
     {
@@ -34,7 +31,9 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
         ]);
 
+
         $product = Product::create($validated);
+
 
         return response()->json([
             'message' => 'Product created successfully.',
@@ -42,10 +41,12 @@ class ProductController extends Controller
         ], 201);
     }
 
+
     public function apiShow(Product $product): JsonResponse
     {
         return response()->json($product);
     }
+
 
     public function apiUpdate(Request $request, Product $product): JsonResponse
     {
@@ -57,7 +58,9 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
         ]);
 
+
         $product->update($validated);
+
 
         return response()->json([
             'message' => 'Product updated successfully.',
@@ -65,20 +68,24 @@ class ProductController extends Controller
         ]);
     }
 
+
     public function apiDestroy(Product $product): JsonResponse
     {
         $product->delete();
+
 
         return response()->json([
             'message' => 'Product deleted successfully.',
         ]);
     }
 
+
     // Frontend views and DataTables integration
     public function index(Request $request)
 {
     $products = Product::with('category')->latest()->paginate(10);
     $categories = Category::all(); // Fetch all categories
+
 
     if ($request->ajax()) {
         return DataTables::of($products)
@@ -98,14 +105,17 @@ class ProductController extends Controller
             ->make(true);
     }
 
+
     return view('admin.products.index', compact('products', 'categories'));
 }
+
 
     public function create()
     {
         $categories = Category::all();
         return view('admin.products.create', compact('categories'));
     }
+
 
     public function store(Request $request)
     {
@@ -117,21 +127,26 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
         ]);
 
+
         Product::create($validated);
+
 
         return redirect()->route('products.index')->with('success', 'Product created successfully.');
     }
+
 
     public function show(Product $product)
     {
         return view('customer.product-details', compact('product'));
     }
 
+
     public function edit(Product $product)
     {
         $categories = Category::all();
         return view('admin.products.edit', compact('product', 'categories'));
     }
+
 
     public function update(Request $request, Product $product)
     {
@@ -143,14 +158,18 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
         ]);
 
+
         $product->update($validated);
+
 
         return redirect()->route('products.index')->with('success', 'Product updated successfully.');
     }
 
+
     public function destroy(Product $product)
     {
         $product->delete();
+
 
         return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
     }
