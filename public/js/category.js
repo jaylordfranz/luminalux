@@ -1,9 +1,19 @@
 $(document).ready(function () {
     function initializeDataTable() {
         $('#categoriesTable').DataTable({
+            processing: true,
+            serverSide: true,
             ajax: {
                 url: "/api/categories",
-                dataSrc: ""
+                type: "GET",
+                data: function (d) {
+                    // Add any additional parameters to the request if needed
+                    return $.extend({}, d, {
+                        // Example of additional parameters
+                        start: d.start,
+                        length: d.length
+                    });
+                }
             },
             dom: 'Bfrtip',
             buttons: [
@@ -41,7 +51,11 @@ $(document).ready(function () {
                                '<a href="#" class="deleteBtn" data-id="' + data.id + '"><i class="fas fa-trash-alt" style="font-size:24px; color:red"></i></a>';
                     }
                 }
-            ]
+            ],
+            language: {
+                search: "",
+                searchPlaceholder: "Search..."
+            }
         });
     }
 
@@ -170,59 +184,9 @@ $(document).ready(function () {
         });
     }
     
-
-    function loadCategories(page) {
-        $.ajax({
-            url: '/api/categories',
-            method: 'GET',
-            data: {
-                start: (page - 1) * 10,
-                length: 10,
-                draw: 1
-            },
-            success: function (response) {
-                var table = $('#categoriesTable').DataTable();
-                table.clear().rows.add(response.data).draw();
-                renderPagination(response.recordsTotal, page);
-            },
-            error: function (error) {
-                console.log(error);
-            }
-        });
-    }
-
-    function renderPagination(totalRecords, currentPage) {
-        var totalPages = Math.ceil(totalRecords / 10);
-        var paginationHtml = '';
-
-        if (currentPage > 1) {
-            paginationHtml += `<li class="page-item"><a class="page-link" href="#" data-page="${currentPage - 1}">Previous</a></li>`;
-        }
-
-        for (var i = 1; i <= totalPages; i++) {
-            var activeClass = i === currentPage ? 'active' : '';
-            paginationHtml += `<li class="page-item ${activeClass}"><a class="page-link" href="#" data-page="${i}">${i}</a></li>`;
-        }
-
-        if (currentPage < totalPages) {
-            paginationHtml += `<li class="page-item"><a class="page-link" href="#" data-page="${currentPage + 1}">Next</a></li>`;
-        }
-
-        $('#pagination').html(paginationHtml);
-    }
-
-    $('#pagination').on('click', 'a.page-link', function (e) {
-        e.preventDefault();
-        var page = $(this).data('page');
-        loadCategories(page);
-    });
-
     initializeDataTable();
     handleCategorySubmit();
     handleCategoryUpdate();
     handleCategoryEdit();
     handleCategoryDelete();
-    loadCategories(1); // Initial load
 });
-
-

@@ -46,4 +46,9 @@ class Checkout extends Model
     {
         return $this->belongsTo(Customer::class);
     }
+
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'order_id');
+    }
 }

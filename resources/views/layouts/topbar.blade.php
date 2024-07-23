@@ -29,6 +29,7 @@
         <a class="nav-link" href="#"><i class="fas fa-heart"></i></a>
         <a class="nav-link" href="{{ route('customer.profile') }}"><i class="fas fa-user"></i> Customer Profile</a>
         <a class="nav-link" href="{{ route('customer.cart') }}"><i class="fas fa-shopping-cart"></i> Shopping Cart</a>
+        <a class="nav-link" href="{{ route('customer.checkout') }}"><i class="fas fa-credit-card"></i> Checkout</a>
         <a class="nav-link" href="{{ route('customer.orders.index') }}"><i class="fas fa-history"></i> Order History</a>
         <a class="nav-link" href="{{ route('customer.reviews') }}"><i class="fas fa-star"></i> Product Reviews</a>
     </div>

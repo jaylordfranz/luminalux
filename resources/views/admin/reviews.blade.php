@@ -35,52 +35,30 @@
             </tr>
         </thead>
         <tbody>
-            <!-- Replace with Blade directives to loop through reviews -->
-            <tr>
-                <td>1</td>
-                <td>Product A</td>
-                <td>John Doe</td>
-                <td>4.5</td>
-                <td>Great product, fast shipping!</td>
-                <td>2024-06-25</td>
-                <td>
-                    <button class="btn btn-info btn-sm" onclick="viewReviewDetails(1)">View</button>
-                    <button class="btn btn-warning btn-sm" onclick="editReview(1)">Edit</button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteReview(1)">Delete</button>
-                </td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Product B</td>
-                <td>Jane Smith</td>
-                <td>5.0</td>
-                <td>Excellent service and quality!</td>
-                <td>2024-06-26</td>
-                <td>
-                    <button class="btn btn-info btn-sm" onclick="viewReviewDetails(2)">View</button>
-                    <button class="btn btn-warning btn-sm" onclick="editReview(2)">Edit</button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteReview(2)">Delete</button>
-                </td>
-            </tr>
-            <!-- End of demo data -->
+            @foreach ($reviews as $review)
+                <tr>
+                    <td>{{ $review->id }}</td>
+                    <td>{{ $review->product->name }}</td> <!-- Assuming there is a relationship for product -->
+                    <td>{{ $review->customer->name }}</td> <!-- Assuming there is a relationship for customer -->
+                    <td>{{ $review->rating }}</td>
+                    <td>{{ $review->comment }}</td>
+                    <td>{{ $review->created_at->format('Y-m-d') }}</td>
+                    <td>
+                        <!-- Add delete form -->
+                        <form action="{{ route('reviews.destroy', $review->id) }}" method="POST" style="display:inline;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            @endforeach
         </tbody>
     </table>
 
     <!-- Pagination -->
     <div class="mt-3">
-        <nav aria-label="Page navigation example">
-            <ul class="pagination justify-content-end">
-                <li class="page-item disabled">
-                    <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                </li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="#">Next</a>
-                </li>
-            </ul>
-        </nav>
+        {{ $reviews->links() }} <!-- Pagination links -->
     </div>
 </div>
 
@@ -116,21 +94,6 @@
     function handleExportPDF() {
         // Implement functionality for Export PDF button
         alert('Export PDF button clicked');
-    }
-
-    function viewReviewDetails(reviewId) {
-        // Implement functionality to view review details
-        alert('View details for Review ID ' + reviewId);
-    }
-
-    function editReview(reviewId) {
-        // Implement functionality to edit review
-        alert('Edit Review ID ' + reviewId);
-    }
-
-    function deleteReview(reviewId) {
-        // Implement functionality to delete review
-        alert('Delete Review ID ' + reviewId);
     }
 </script>
 @endsection

@@ -61,9 +61,12 @@
 
 
         <!-- Pagination -->
-        <div class="mt-3">
-            {{ $categories->links() }}
-        </div>
+<div class="mt-3">
+    <ul id="pagination" class="pagination">
+        <!-- Pagination buttons will be injected here -->
+    </ul>
+</div>
+
     </div>
 
 
@@ -271,5 +274,3 @@
         });
     </script>
 @endsection
-
-

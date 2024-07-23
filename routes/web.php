@@ -20,6 +20,7 @@ use App\Http\Controllers\AdminOrderController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\InventoryChartController;
+use App\Http\Controllers\ReviewController;
 
 
 /*
@@ -222,6 +223,11 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']); 
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+
 ////customer order history
 Route::get('/customer/orders', [OrderController::class, 'index'])->name('customer.orders.index');
 
+// Reviews
+Route::get('/reviews/{order}', [ReviewController::class, 'show'])->name('reviews.show');
+Route::post('/reviews/{order}', [ReviewController::class, 'store'])->name('reviews.store');
+Route::delete('/reviews/{review}', [ReviewController::class, 'destroy'])->name('reviews.destroy');
