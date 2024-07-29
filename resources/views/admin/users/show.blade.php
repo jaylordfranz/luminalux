@@ -1,6 +1,9 @@
-@extends('layouts.app')
+<!-- resources/views/admin/users/show.blade.php -->
+
+@extends('layouts.admin')
 
 @section('content')
+@include('partials.header')
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
@@ -35,3 +38,5 @@
 
 @include('partials.footer')
 @endsection
+
+

@@ -5,8 +5,6 @@
 
 <div class="main-content">
     <h2>Payment Verification</h2>
-    <p>Here you can review and verify payment transactions.</p>
-
     <!-- Search Bar with Magnifying Glass Icon -->
     <div class="input-group mb-3">
         <div class="input-group-prepend">

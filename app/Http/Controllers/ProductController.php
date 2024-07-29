@@ -1,15 +1,14 @@
 <?php
 
-
 namespace App\Http\Controllers;
-
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Imports\ProductsImport;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Yajra\DataTables\Facades\DataTables;
-
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductController extends Controller
 {
@@ -19,7 +18,6 @@ class ProductController extends Controller
         $products = Product::with('category')->paginate(10);
         return response()->json($products);
     }
-
 
     public function apiStore(Request $request): JsonResponse
     {
@@ -31,9 +29,7 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
         ]);
 
-
         $product = Product::create($validated);
-
 
         return response()->json([
             'message' => 'Product created successfully.',
@@ -41,12 +37,10 @@ class ProductController extends Controller
         ], 201);
     }
 
-
     public function apiShow(Product $product): JsonResponse
     {
         return response()->json($product);
     }
-
 
     public function apiUpdate(Request $request, Product $product): JsonResponse
     {
@@ -58,9 +52,7 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
         ]);
 
-
         $product->update($validated);
-
 
         return response()->json([
             'message' => 'Product updated successfully.',
@@ -68,54 +60,47 @@ class ProductController extends Controller
         ]);
     }
 
-
     public function apiDestroy(Product $product): JsonResponse
     {
         $product->delete();
-
 
         return response()->json([
             'message' => 'Product deleted successfully.',
         ]);
     }
 
-
     // Frontend views and DataTables integration
     public function index(Request $request)
-{
-    $products = Product::with('category')->latest()->paginate(10);
-    $categories = Category::all(); // Fetch all categories
+    {
+        $products = Product::with('category')->latest()->paginate(10);
+        $categories = Category::all(); // Fetch all categories
 
+        if ($request->ajax()) {
+            return DataTables::of($products)
+                ->addColumn('category_name', function ($product) {
+                    return $product->category ? $product->category->name : 'N/A';
+                })
+                ->addColumn('action', function ($product) {
+                    $actionBtn = '<a href="' . route('products.show', $product->id) . '" class="btn btn-info btn-sm">View</a> ' .
+                        '<a href="' . route('products.edit', $product->id) . '" class="btn btn-warning btn-sm">Edit</a> ' .
+                        '<form action="' . route('products.destroy', $product->id) . '" method="POST" style="display: inline;">' .
+                        '@csrf @method("DELETE")' .
+                        '<button type="submit" class="btn btn-danger btn-sm">Delete</button>' .
+                        '</form>';
+                    return $actionBtn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
 
-    if ($request->ajax()) {
-        return DataTables::of($products)
-            ->addColumn('category_name', function ($product) {
-                return $product->category->name;
-            })
-            ->addColumn('action', function ($product) {
-                $actionBtn = '<a href="#" class="btn btn-info btn-sm">View</a> ' .
-                    '<a href="#" class="btn btn-warning btn-sm">Edit</a> ' .
-                    '<form action="#" method="POST" style="display: inline;">' .
-                    '@csrf @method("DELETE")' .
-                    '<button type="submit" class="btn btn-danger btn-sm">Delete</button>' .
-                    '</form>';
-                return $actionBtn;
-            })
-            ->rawColumns(['action'])
-            ->make(true);
+        return view('admin.products.index', compact('products', 'categories'));
     }
-
-
-    return view('admin.products.index', compact('products', 'categories'));
-}
-
 
     public function create()
     {
         $categories = Category::all();
         return view('admin.products.create', compact('categories'));
     }
-
 
     public function store(Request $request)
     {
@@ -127,26 +112,21 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
         ]);
 
-
         Product::create($validated);
-
 
         return redirect()->route('products.index')->with('success', 'Product created successfully.');
     }
-
 
     public function show(Product $product)
     {
         return view('customer.product-details', compact('product'));
     }
 
-
     public function edit(Product $product)
     {
         $categories = Category::all();
         return view('admin.products.edit', compact('product', 'categories'));
     }
-
 
     public function update(Request $request, Product $product)
     {
@@ -158,19 +138,30 @@ class ProductController extends Controller
             'category_id' => 'required|exists:categories,id',
         ]);
 
-
         $product->update($validated);
-
 
         return redirect()->route('products.index')->with('success', 'Product updated successfully.');
     }
-
 
     public function destroy(Product $product)
     {
         $product->delete();
 
-
         return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
+    }
+
+    // Excel Import
+    public function importExcel(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls|max:2048'
+        ]);
+
+        try {
+            Excel::import(new ProductsImport, $request->file('file'));
+            return redirect()->route('products.index')->with('success', 'Products imported successfully!');
+        } catch (\Exception $e) {
+            return redirect()->route('products.index')->with('error', 'Error importing products: ' . $e->getMessage());
+        }
     }
 }

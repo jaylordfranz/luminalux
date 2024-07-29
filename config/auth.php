@@ -1,14 +1,11 @@
 <?php
 
-
 return [
-
 
     'defaults' => [
         'guard' => 'web',
         'passwords' => 'users',
     ],
-
 
     'guards' => [
         'web' => [
@@ -16,6 +13,10 @@ return [
             'provider' => 'users',
         ],
 
+        'admin' => [
+            'driver' => 'session',
+            'provider' => 'admins',
+        ],
 
         'api' => [
             'driver' => 'token',
@@ -23,12 +24,10 @@ return [
             'hash' => false,
         ],
 
-
         'customer' => [
             'driver' => 'session',
             'provider' => 'customers',
         ],
-
 
         'customer-api' => [
             'driver' => 'token',
@@ -37,20 +36,22 @@ return [
         ],
     ],
 
-
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
             'model' => App\Models\User::class,
         ],
 
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Admin::class, // Make sure this matches your Admin model
+        ],
 
         'customers' => [
             'driver' => 'eloquent',
             'model' => App\Models\Customer::class,
         ],
     ],
-
 
     'passwords' => [
         'users' => [
@@ -60,7 +61,6 @@ return [
             'throttle' => 60,
         ],
 
-
         'customers' => [
             'provider' => 'customers',
             'table' => 'password_resets',
@@ -69,39 +69,6 @@ return [
         ],
     ],
 
-
     'password_timeout' => 10800,
-
-    'guards' => [
-    'web' => [
-        'driver' => 'session',
-        'provider' => 'users',
-    ],
-
-    'api' => [
-        'driver' => 'token',
-        'provider' => 'users',
-        'hash' => false,
-    ],
-
-    'customer' => [
-        'driver' => 'session',
-        'provider' => 'customers',
-    ],
-],
-
-'providers' => [
-    'users' => [
-        'driver' => 'eloquent',
-        'model' => App\Models\User::class,
-    ],
-
-    'customers' => [
-        'driver' => 'eloquent',
-        'model' => App\Models\Customer::class,
-    ],
-],
-
-
 
 ];

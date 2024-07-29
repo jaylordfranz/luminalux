@@ -17,7 +17,20 @@ class AdminController extends Controller
         $users = User::all();
         return view('admin.users', compact('users'));
     }
+    // public function showReviews()
+    // {
+    //     $reviews = Review::paginate(10); // Adjust pagination as needed
+    //     return view('admin.reviews', compact('reviews'));
+    // }
+    
 
+    public function destroy($id)
+    {
+        $review = Review::findOrFail($id);
+        $review->delete();
+
+        return redirect()->route('admin.reviews')->with('success', 'Review deleted successfully.');
+    }
     public function storeUser(Request $request)
     {
         // Logic to store user
@@ -86,11 +99,7 @@ class AdminController extends Controller
         // Logic to cancel order
     }
 
-    public function showReviews()
-    {
-        $reviews = Review::all();
-        return view('admin.reviews', compact('reviews'));
-    }
+
 
     public function deleteReview($id)
     {

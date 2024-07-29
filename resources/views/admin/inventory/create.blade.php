@@ -1,13 +1,10 @@
 @extends('layouts.admin')
 
-
 @section('content')
     @include('partials.header')
 
-
     <div class="main-content">
         <h2>Add Inventory</h2>
-
 
         {{-- Display validation errors summary --}}
         @if ($errors->any())
@@ -19,7 +16,6 @@
                 </ul>
             </div>
         @endif
-
 
         <form id="addInventoryForm" action="{{ route('inventory.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
@@ -45,10 +41,8 @@
         </form>
     </div>
 
-
     @include('partials.footer')
 @endsection
-
 
 @section('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.2/jquery.validate.min.js"></script>
@@ -82,5 +76,3 @@
     });
 </script>
 @endsection
-
-

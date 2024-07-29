@@ -1,10 +1,10 @@
 <!-- resources/views/partials/header.blade.php -->
 
 <header class="header navbar navbar-expand-lg navbar-light bg-light">
-    <a class="navbar-brand" href="#">
-        <img src="https://drive.google.com/file/d/1hpYb-Ru7AO4OUnNtLHuME_b4InxAYQHN/view?usp=sharing" alt="Lumina Lux" height="30">
-        Lumina Lux
-    </a>
+<a class="navbar-brand" href="#">
+    <img src="https://via.placeholder.com/30" alt="Lumina Lux" class="logo-circle">
+    Lumina Lux
+</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
         aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
@@ -17,7 +17,7 @@
             <div class="nav-item dropdown">
                 <button class="btn btn-light dropdown-toggle" type="button" id="profileButton"
                     aria-haspopup="true" aria-expanded="false" onclick="toggleProfileMenu()">
-                    <span>Hi, Jaylord Franz!</span> <!-- Demo user name -->
+                    <span>Hi, Admin!</span> <!-- Demo user name -->
                     <i class="fas fa-user-circle"></i>
                 </button>
                 <div id="profileMenu" class="dropdown-menu dropdown-menu-right">

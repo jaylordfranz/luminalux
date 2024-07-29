@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class CustomerController extends Controller
 {
-    //
+
    
     public function skincare() {
         return view('customer.skincare');

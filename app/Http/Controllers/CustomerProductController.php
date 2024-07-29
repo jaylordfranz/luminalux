@@ -13,9 +13,12 @@ class CustomerProductController extends Controller
 {
     public function index()
     {
-        $products = Product::all();
+        // Retrieve paginated products, 10 products per page
+        $products = Product::paginate(12);
+    
         return response()->json(['data' => $products]);
     }
+
 
     public function show($id)
     {

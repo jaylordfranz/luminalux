@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Checkout;
@@ -7,11 +6,11 @@ use App\Models\Review;
 use Illuminate\Http\Request;
 
 class ReviewController extends Controller
-
 {
     public function index()
     {
-        $reviews = Review::with('product', 'customer')->paginate(10); // Adjust the relationships and pagination as needed
+        // Fetch all reviews with related product and customer data, paginate by 10
+        $reviews = Review::with('product', 'customer')->paginate(10); // Adjust the relationships if necessary
         return view('admin.reviews', compact('reviews'));
     }
     
@@ -39,6 +38,6 @@ class ReviewController extends Controller
     public function destroy(Review $review)
     {
         $review->delete();
-        return redirect()->route('reviews.index')->with('success', 'Review deleted successfully!');
+        return redirect()->route('admin.reviews')->with('success', 'Review deleted successfully!');
     }
 }

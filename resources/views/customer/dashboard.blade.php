@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -70,6 +71,29 @@
             width: 100%;
             margin-top: 10px;
         }
+         /* Footer Styles */
+         .footer {
+            background-color: #ffffff;
+            color: #343a40;
+            padding: 20px 0;
+            border-top: 1px solid #ddd;
+            text-align: center;
+        }
+        .footer .footer-logo {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .footer .footer-logo i {
+            color: #28a745;
+        }
+        .footer p {
+            margin: 0;
+            color: #6c757d;
+        }
+        .pagination {
+            justify-content: center;
+        }
     </style>
 </head>
 <body>
@@ -88,13 +112,11 @@
             </button>
         </form>
 
-
         <div class="d-flex align-items-center">
             <a class="nav-link" href="{{ route('customer.profile') }}"><i class="fas fa-user"></i> Customer Profile</a>
             <a class="nav-link" href="{{ route('customer.cart') }}"><i class="fas fa-shopping-cart"></i> Shopping Cart</a>
-            <a class="nav-link" href="{{ route('customer.orders.index') }}"><i class="fas fa-history"></i> Order History</a> <!-- Corrected Route Name -->
-            <a class="nav-link" href="{{ route('customer.reviews.index') }}"><i class="fas fa-star"></i> Product Reviews</a>
-            <a class="nav-link" href="{{ route('customer.checkout') }}"><i class="fas fa-credit-card"></i> Checkout</a> <!-- Added Checkout Link -->
+            <a class="nav-link" href="{{ route('customer.orders.index') }}"><i class="fas fa-history"></i> Order History</a>
+            <a class="nav-link" href="{{ route('customer.checkout') }}"><i class="fas fa-credit-card"></i> Checkout</a>
         </div>
     </nav>
 
@@ -138,118 +160,155 @@
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <script>
-$(document).ready(function() {
-    let selectedProductId = null;
+    $(document).ready(function() {
+        let selectedProductId = null;
+        let currentPage = 1;
 
-    // Fetch products via API endpoint on page load
-    fetchProducts();
+        function fetchProducts(page = 1) {
+            $.ajax({
+                url: '{{ route('api.customer.products') }}',
+                method: 'GET',
+                data: {
+                    page: page
+                },
+                success: function(response) {
+                    var products = response.data.data;
+                    var pagination = response.data.links;
 
-    function fetchProducts() {
-        $.ajax({
-            url: '{{ route('api.customer.products') }}',
-            method: 'GET',
-            success: function(response) {
-                var products = response.data;
+                    $('#products-container').empty();
+                    $('#pagination-controls .pagination').empty();
 
-                $('#products-container').empty();
-
-                products.forEach(function(product) {
-                    appendProductCard(product);
-                });
-            },
-            error: function(xhr, status, error) {
-                console.error('Error fetching products:', error);
-            }
-        });
-    }
-
-    function appendProductCard(product) {
-        var formattedPrice = parseFloat(product.price).toFixed(2);
-
-        var productCard = `
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="product-card">
-                    <img src="${product.image_url}" alt="${product.name} Image">
-                    <div class="product-name">${product.name}</div>
-                    <div class="product-price">$${formattedPrice}</div>
-                    <button class="btn btn-primary product-btn" data-product-id="${product.id}" data-product-name="${product.name}" data-product-price="${formattedPrice}" data-product-image="${product.image_url}">Add to Cart</button>
-                </div>
-            </div>
-        `;
-
-        $('#products-container').append(productCard);
-    }
-
-    $(document).on('click', '.product-btn', function() {
-        selectedProductId = $(this).data('product-id');
-        var productName = $(this).data('product-name');
-        var productPrice = $(this).data('product-price');
-        var productImage = $(this).data('product-image');
-
-        $('#productName').text(productName);
-        $('#productPrice').text('$' + productPrice);
-        $('#productImage').attr('src', productImage);
-
-        $('#quantityModal').modal('show');
-    });
-
-    $('#quantityForm').submit(function(event) {
-        event.preventDefault();
-
-        var quantity = $('#quantity').val();
-
-        $.ajax({
-            url: '{{ route('customer.add-to-cart') }}',
-            method: 'POST',
-            data: {
-                product_id: selectedProductId,
-                quantity: quantity,
-                _token: '{{ csrf_token() }}' // Include CSRF token for Laravel
-            },
-            success: function(response) {
-                $('#quantityModal').modal('hide');
-                alert('Product added to cart successfully!');
-            },
-            error: function(xhr, status, error) {
-                console.error('Error adding to cart:', error);
-                alert('Failed to add product to cart. Please try again.');
-            }
-        });
-    });
-
-    $('#searchForm').submit(function(event) {
-        event.preventDefault(); // Prevent default form submission
-
-        var query = $('#searchInput').val();
-
-        // Perform search via AJAX
-        $.ajax({
-            url: '{{ route('search') }}',
-            dataType: 'json',
-            data: {
-                query: query
-            },
-            success: function(data) {
-                // Clear existing products
-                $('#products-container').empty();
-
-                // Check if search result is empty
-                if (data.length === 0) {
-                    $('#products-container').append('<p>No products found.</p>');
-                } else {
-                    // Append new products based on search results
-                    data.forEach(function(product) {
+                    // Append products
+                    products.forEach(function(product) {
                         appendProductCard(product);
                     });
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error('Error performing search:', error);
-            }
 
+                    // Append pagination controls
+                    if (pagination.length > 1) {
+                        pagination.forEach(function(link) {
+                            if (link.url) {
+                                $('#pagination-controls .pagination').append(`
+                                    <li class="page-item ${link.active ? 'active' : ''}">
+                                        <a class="page-link" href="${link.url}">${link.label}</a>
+                                    </li>
+                                `);
+                            }
+                        });
+
+                        // Add click event for pagination links
+                        $('#pagination-controls .page-link').on('click', function(event) {
+                            event.preventDefault();
+                            let url = $(this).attr('href');
+                            let page = new URL(url).searchParams.get('page');
+                            fetchProducts(page);
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error fetching products:', error);
+                }
+            });
+        }
+
+        function appendProductCard(product) {
+            var formattedPrice = parseFloat(product.price).toFixed(2);
+
+            var productCard = `
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="product-card">
+                        <img src="https://via.placeholder.com/150" alt="${product.name} Image">
+                        <div class="product-name">${product.name}</div>
+                        <div class="product-price">$${formattedPrice}</div>
+                        <button class="btn btn-primary product-btn" data-product-id="${product.id}" data-product-name="${product.name}" data-product-price="${formattedPrice}" data-product-image="${product.image_url}">Add to Cart</button>
+                    </div>
+                </div>
+            `;
+
+            $('#products-container').append(productCard);
+        }
+
+        $(document).on('click', '.product-btn', function() {
+            selectedProductId = $(this).data('product-id');
+            var productName = $(this).data('product-name');
+            var productPrice = $(this).data('product-price');
+            var productImage = $(this).data('product-image');
+
+            $('#productName').text(productName);
+            $('#productPrice').text('$' + productPrice);
+            $('#productImage').attr('src', productImage);
+
+            $('#quantityModal').modal('show');
         });
+
+        $('#quantityForm').submit(function(event) {
+            event.preventDefault();
+
+            var quantity = $('#quantity').val();
+
+            $.ajax({
+                url: '{{ route('customer.add-to-cart') }}',
+                method: 'POST',
+                data: {
+                    product_id: selectedProductId,
+                    quantity: quantity,
+                    _token: '{{ csrf_token() }}' // Include CSRF token for Laravel
+                },
+                success: function(response) {
+                    $('#quantityModal').modal('hide');
+                    alert('Product added to cart successfully!');
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error adding to cart:', error);
+                    alert('Failed to add product to cart. Please try again.');
+                }
+            });
+        });
+
+        $('#searchForm').submit(function(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            var query = $('#searchInput').val();
+
+            // Perform search via AJAX
+            $.ajax({
+                url: '{{ route('search') }}',
+                dataType: 'json',
+                data: {
+                    query: query
+                },
+                success: function(data) {
+                    // Clear existing products
+                    $('#products-container').empty();
+
+                    // Check if search result is empty
+                    if (data.length === 0) {
+                        $('#products-container').append('<p>No products found.</p>');
+                    } else {
+                        // Append new products based on search results
+                        data.forEach(function(product) {
+                            appendProductCard(product);
+                        });
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('Error performing search:', error);
+                }
+            });
+        });
+
+        // Initial fetch
+        fetchProducts();
     });
-});
-</script>
+    </script>
 </body>
+<footer class="footer">
+    <!-- Pagination Controls -->
+    <div class="container">
+        <nav id="pagination-controls" aria-label="Product pagination">
+            <ul class="pagination justify-content-center">
+                <!-- Pagination links will be inserted here -->
+            </ul>
+        </nav>
+    </div>
+</footer>
 </html>

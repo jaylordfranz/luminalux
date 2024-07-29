@@ -58,6 +58,7 @@ class UserController extends Controller
             unset($validated['password']);
         }
 
+        // Update customer details
         $customer->update([
             'name' => $validated['name'],
             'email' => $validated['email'],
@@ -79,7 +80,6 @@ class UserController extends Controller
             'message' => 'Customer deleted successfully.',
         ]);
     }
-
     // Frontend views and DataTables integration
     public function index(Request $request)
     {
@@ -122,7 +122,6 @@ class UserController extends Controller
 
         return redirect()->route('users.index')->with('success', 'User created successfully.');
     }
-
     public function show($id)
     {
         $customer = Customer::find($id);
@@ -134,6 +133,7 @@ class UserController extends Controller
         return view('admin.users.show', compact('customer'));
     }
     
+
     public function edit($id)
     {
         $customer = Customer::find($id);
@@ -142,7 +142,6 @@ class UserController extends Controller
         }
         return view('admin.users.edit', compact('customer'));
     }
-    
     public function update(Request $request, Customer $customer)
     {
         $validated = $request->validate([
@@ -174,4 +173,5 @@ class UserController extends Controller
     
         return redirect()->route('users.index')->with('success', 'User deleted successfully.');
     }
+    
 }

@@ -5,8 +5,7 @@
 
 <div class="main-content">
     <h2>User Management</h2>
-    <p>Here you can view and manage user accounts.</p>
-
+    
     <!-- Buttons -->
     <div class="mb-3">
         <button class="btn btn-primary mr-2" onclick="handleAdd()">Add User</button>

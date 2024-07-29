@@ -42,5 +42,16 @@ class OrderController extends Controller
 
         return view('customer.orders.index', compact('orders'));
     }
-  
+
+    public function getOrderReceipt($orderId)
+{
+    $order = Checkout::findOrFail($orderId);
+    return response()->json($order);
+}
+
+public function getOrderReceiptView($orderId)
+{
+    $order = Checkout::findOrFail($orderId);
+    return view('customer.orders.receipt', compact('order'));
+}
 }

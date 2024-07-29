@@ -1,13 +1,10 @@
 @extends('layouts.admin')
 
-
 @section('content')
     @include('partials.header')
 
-
     <div class="main-content">
         <h2>Inventory Details</h2>
-
 
         <div class="card">
             <div class="card-body">
@@ -30,12 +27,8 @@
             </div>
         </div>
 
-
         <a href="{{ route('inventory.index') }}" class="btn btn-primary mt-3">Back</a>
     </div>
 
-
     @include('partials.footer')
 @endsection
-
-

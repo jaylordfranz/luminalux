@@ -18,9 +18,9 @@ class CreateCustomersTable extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('phone_number')->nullable(); // Add phone_number column
-            $table->unsignedBigInteger('default_billing_address_id')->nullable(); // Add default_billing_address_id column
-            $table->string('status')->default('inactive'); // Add status column with a default value
+            // $table->string('phone_number')->nullable(); // Add phone_number column
+            // $table->unsignedBigInteger('default_billing_address_id')->nullable(); // Add default_billing_address_id column
+            $table->string('status')->default('active'); // Add status column with a default value
             $table->timestamp('email_verified_at')->nullable();
             $table->rememberToken();
             $table->timestamps();
@@ -39,3 +39,4 @@ class CreateCustomersTable extends Migration
         Schema::dropIfExists('customers');
     }
 }
+

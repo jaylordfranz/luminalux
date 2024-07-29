@@ -3,7 +3,6 @@
 @section('content')
     <div class="main-content">
         <h2>Manage Users</h2>
-        <p>Here you can add new users, update user details, and delete users.</p>
 
         <div class="mb-3">
             <a href="{{ route('users.create') }}" class="btn btn-primary">Add User</a>

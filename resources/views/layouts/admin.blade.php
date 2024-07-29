@@ -111,7 +111,7 @@
             <i class="fas fa-warehouse"></i>
             <span class="menu-text">Inventory Management</span>
         </a>
-        <a href="{{ route('admin.payments') }}">
+        <a href="{{ route('admin.payments.index') }}">
             <i class="fas fa-money-bill-wave"></i>
             <span class="menu-text">Payment Verification</span>
         </a>

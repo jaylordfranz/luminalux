@@ -7,7 +7,6 @@
 
 <div class="main-content">
     <h2>Manage Suppliers</h2>
-    <p>Here you can add new suppliers, update supplier details, and delete suppliers.</p>
 
 
     <!-- Add Supplier Button -->
@@ -62,9 +61,6 @@
         {{ $suppliers->links() }}
     </div>
 </div>
-
-
-@include('partials.footer')
 
 
 <!-- Add Supplier Modal -->

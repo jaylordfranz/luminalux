@@ -45,7 +45,7 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'User registered successfully.',
-            'redirect' => route('customer.dashboard')
+            'redirect' => route('customer.login')
         ]);
     }
 

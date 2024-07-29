@@ -4,8 +4,7 @@
 @include('partials.header')
 
 <div class="main-content">
-    <h2>Order Management</h2>
-    <p>Here you can view and manage all customer orders. Update order statuses, handle cancellations, and returns.</p>
+    <h2>Manage Orders</h2>
 
     <!-- Search Bar with Magnifying Glass Icon -->
     <div class="input-group mb-3">
@@ -44,8 +43,6 @@
         </tbody>
     </table>
 </div>
-
-@include('partials.footer')
 
 <!-- DataTables CSS and JS -->
 <link rel="stylesheet" href="https://cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">

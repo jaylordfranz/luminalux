@@ -7,7 +7,6 @@
 
     <div class="main-content">
         <h2>Manage Products</h2>
-        <p>Here you can add new products, update product details, and delete products.</p>
 
 
         <!-- Add Product Button -->
@@ -16,6 +15,16 @@
                 Add Product
             </button>
         </div>
+
+        <!-- Import Excel Form -->
+        <form action="{{ route('products.importExcel') }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            <div class="mb-3">
+                <label for="file" class="form-label">Import Excel:</label>
+                <input type="file" class="form-control-file" id="file" name="file" required>
+                <button type="submit" class="btn btn-primary mt-2">Import</button>
+            </div>
+        </form>
 
 
         <!-- DataTable with Search Bar and Pagination -->
@@ -41,7 +50,7 @@
                         <td>{{ $product->stock_quantity }}</td>
                         <td>{{ $product->category->name }}</td>
                         <td>
-                            <a href="{{ route('products.show', $product->id) }}" class="btn btn-info btn-sm">View</a>
+                            <a href="{{ route('admin.products.shows', $product->id) }}" class="btn btn-info btn-sm">View</a>
                             <a href="{{ route('products.edit', $product->id) }}" class="btn btn-warning btn-sm">Edit</a>
                             <form action="{{ route('products.destroy', $product->id) }}" method="POST" class="delete-form" style="display:inline-block;">
                                 @csrf
@@ -60,9 +69,6 @@
             {{ $products->links() }}
         </div>
     </div>
-
-
-    @include('partials.footer')
 
 
     <!-- Add Product Modal -->

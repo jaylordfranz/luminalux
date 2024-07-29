@@ -12,7 +12,9 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CustomerProductController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SupplierController;
-
+use App\Http\Controllers\DiscountController;
+use App\Http\Controllers\ApiCartController;
+use App\Http\Controllers\ApiCheckoutController;
 
 // User Management
 Route::middleware('auth:api')->group(function () {
@@ -32,13 +34,13 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 // Categories API Endpoints
-Route::get('categories', [CategoryController::class, 'apiIndex']);
-Route::post('categories', [CategoryController::class, 'apiStore']);
-Route::get('categories/{category}', [CategoryController::class, 'apiShow']);
-Route::put('categories/{category}', [CategoryController::class, 'apiUpdate']);
-Route::delete('categories/{category}', [CategoryController::class, 'apiDestroy']);
-Route::delete('/categories/{category}', 'CategoryController@destroy')->name('categories.destroy');
-Route::get('categories-product-counts', [CategoryController::class, 'apiProductCounts']);
+// Route::get('categories', [CategoryController::class, 'apiIndex']);
+// Route::post('categories', [CategoryController::class, 'apiStore']);
+// Route::get('categories/{category}', [CategoryController::class, 'apiShow']);
+// Route::put('categories/{category}', [CategoryController::class, 'apiUpdate']);
+// Route::delete('categories/{category}', [CategoryController::class, 'apiDestroy']);
+// Route::delete('/categories/{category}', 'CategoryController@destroy')->name('categories.destroy');
+// Route::get('categories-product-counts', [CategoryController::class, 'apiProductCounts']);
 
 // Product API Endpoints
 Route::get('products', [ProductController::class, 'apiIndex']);
@@ -76,3 +78,47 @@ Route::post('users', [UserController::class, 'apiStore']);
 Route::get('users/{customer}', [UserController::class, 'apiShow']);
 Route::put('users/{customer}', [UserController::class, 'apiUpdate']);
 Route::delete('users/{customer}', [UserController::class, 'apiDestroy']);
+
+// Discounts API Resource Route 
+Route::get('discounts', [DiscountController::class, 'apiIndex']); 
+Route::post('discounts', [DiscountController::class, 'apiStore']); 
+Route::get('discounts/{discount}', [DiscountController::class, 'apiShow']); 
+Route::put('discounts/{discount}', [DiscountController::class, 'apiUpdate']); 
+Route::delete('discounts/{discount}', [DiscountController::class, 'apiDestroy']); 
+
+// Suppliers API Resource Route 
+Route::get('suppliers', [SupplierController::class, 'apiIndex']); 
+Route::post('suppliers', [SupplierController::class, 'apiStore']); 
+Route::get('suppliers/{supplier}', [SupplierController::class, 'apiShow']); 
+Route::put('suppliers/{supplier}', [SupplierController::class, 'apiUpdate']); 
+Route::delete('suppliers/{suppliers}', [SupplierController::class, 'apiDestroy']); 
+
+// Product API Resource Route 
+Route::get('products', [ProductController::class, 'apiIndex']); 
+Route::post('products', [ProductController::class, 'apiStore']); 
+Route::get('products/{product}', [ProductController::class, 'apiShow']); 
+Route::put('products/{product}', [ProductController::class, 'apiUpdate']); 
+Route::delete('products/{product}', [ProductController::class, 'apiDestroy']); 
+    
+// Category API Resource Route 
+Route::get('categories', [CategoryController::class, 'apiIndex']); 
+Route::post('categories', [CategoryController::class, 'apiStore']); 
+Route::get('categories/{category}', [CategoryController::class, 'apiShow']); 
+Route::put('categories/{category}', [CategoryController::class, 'apiUpdate']); 
+Route::delete('categories/{category}', [CategoryController::class, 'apiDestroy']); 
+    
+
+
+Route::middleware('api')->group(function () {
+    Route::get('/cart', [ApiCartController::class, 'index']);
+    Route::get('/cart/{id}', [ApiCartController::class, 'show']);
+    Route::post('/cart', [ApiCartController::class, 'store']);
+});
+
+Route::middleware('api')->group(function () {
+    Route::get('/checkout', [ApiCheckoutController::class, 'index']);
+    Route::get('/checkout/{id}', [ApiCheckoutController::class, 'show']);
+    Route::post('/checkout', [ApiCheckoutController::class, 'store']); // Use store method for POST
+});
+
+
